@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conflitto al Campo Estivo - Roma 17</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS (Configured via script for custom colors) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        deep: '#211638',    // CMYK 97 100 38 56
+                        primary: '#462678', // CMYK 90 100 11 3
+                        accent: '#6B478D',  // CMYK 70 80 10 0
+                        lavender: '#AEB0D9',// CMYK 36 30 0 0
+                        paper: '#f8f9fa',
+                    },
+                    fontFamily: {
+                        sans: ['Open Sans', 'sans-serif'],
+                        display: ['Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Smooth scrolling */
+        html { scroll-behavior: smooth; }
+        
+        /* Custom scrollbar for webkit */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #211638; }
+        ::-webkit-scrollbar-thumb { background: #6B478D; border-radius: 4px; }
+        
+        /* Typography overrides */
+        .prose-custom p { margin-bottom: 1.25rem; line-height: 1.7; }
+    </style>
+</head>
+<body class="bg-deep text-gray-100 font-sans antialiased selection:bg-accent selection:text-white">
+
+    <!-- Hero Section -->
+    <header class="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+        <!-- Abstract Background Shapes -->
+        <div class="absolute top-0 left-0 w-full h-full opacity-20">
+            <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-primary rounded-full blur-3xl"></div>
+            <div class="absolute bottom-[-10%] left-[-10%] w-80 h-80 bg-accent rounded-full blur-3xl"></div>
+        </div>
+
+        <div class="relative z-10 container mx-auto px-6 text-center">
+            <div class="inline-block p-2 px-4 border border-lavender/30 rounded-full text-lavender text-sm tracking-widest mb-4 uppercase">
+                Caso Studio
+            </div>
+            <h1 class="font-display text-4xl md:text-6xl font-bold mb-6 leading-tight text-white">
+                Conflitto al campo estivo<br>del <span class="text-lavender">Roma 17</span>
+            </h1>
+            <p class="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto font-light">
+                È il 6 agosto, terzo giorno di campo estivo...
+            </p>
+            <div class="mt-10 animate-bounce">
+                <i data-lucide="arrow-down" class="mx-auto w-8 h-8 text-lavender"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Context Section -->
+    <section class="py-12 bg-deep/50 border-t border-white/5">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="flex flex-col md:flex-row gap-6 items-start">
+                <div class="bg-primary/20 p-4 rounded-lg border-l-4 border-accent w-full md:w-auto shrink-0">
+                    <div class="flex items-center gap-3 mb-2">
+                        <i data-lucide="map-pin" class="text-lavender"></i>
+                        <span class="font-display font-bold text-lavender">Luogo</span>
+                    </div>
+                    <p class="text-sm">Alta Garfagnana, Toscana</p>
+                </div>
+                <div class="text-gray-300 leading-relaxed">
+                    <p>
+                        Montato in una radura fra i castagni. Il reparto sta costruendo un ponte di corde per attraversare il torrente che delimita il perimetro del campo.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Characters Grid -->
+    <section class="py-16 bg-gradient-to-b from-deep to-primary/30">
+        <div class="container mx-auto px-6 max-w-6xl">
+            <h2 class="font-display text-3xl font-bold mb-10 text-center text-white flex items-center justify-center gap-3">
+                <i data-lucide="users" class="text-accent"></i>
+                I Protagonisti
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Federico -->
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-xl hover:bg-white/10 transition duration-300">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-display font-bold text-xl text-lavender">Federico</h3>
+                        <span class="text-xs bg-primary px-2 py-1 rounded text-white">29 anni</span>
+                    </div>
+                    <p class="text-gray-300 text-sm">Capo reparto da otto anni. Ex fidanzato di Alice, con cui mantiene un rapporto teso.</p>
+                </div>
+
+                <!-- Giulia -->
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-xl hover:bg-white/10 transition duration-300">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-display font-bold text-xl text-lavender">Giulia</h3>
+                        <span class="text-xs bg-primary px-2 py-1 rounded text-white">27 anni</span>
+                    </div>
+                    <p class="text-gray-300 text-sm">Capo reparto con sei anni di esperienza. Ha una relazione con Lorenzo da due anni.</p>
+                </div>
+
+                <!-- Anna -->
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-xl hover:bg-white/10 transition duration-300">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-display font-bold text-xl text-lavender">Anna</h3>
+                        <span class="text-xs bg-primary px-2 py-1 rounded text-white">23 anni</span>
+                    </div>
+                    <p class="text-gray-300 text-sm">Aiuto capo reparto al suo terzo anno di servizio. È la sorella minore di Alice.</p>
+                </div>
+
+                <!-- Marco -->
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-xl hover:bg-white/10 transition duration-300">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-display font-bold text-xl text-lavender">Marco</h3>
+                        <span class="text-xs bg-primary px-2 py-1 rounded text-white">45 anni</span>
+                    </div>
+                    <p class="text-gray-300 text-sm">Capo gruppo, in visita. È stato il capo di Federico quando era ragazzo.</p>
+                </div>
+
+                <!-- Alice -->
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-xl hover:bg-white/10 transition duration-300">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-display font-bold text-xl text-lavender">Alice</h3>
+                        <span class="text-xs bg-primary px-2 py-1 rounded text-white">33 anni</span>
+                    </div>
+                    <p class="text-gray-300 text-sm">Capo branco, salita per dare una mano alla cambusa. Ex fidanzata di Federico, ora sposata.</p>
+                </div>
+
+                <!-- Lorenzo -->
+                <div class="bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-xl hover:bg-white/10 transition duration-300">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-display font-bold text-xl text-lavender">Lorenzo</h3>
+                        <span class="text-xs bg-primary px-2 py-1 rounded text-white">27 anni</span>
+                    </div>
+                    <p class="text-gray-300 text-sm">Capo clan, in visita. Fidanzato con Giulia, amico di Federico dai tempi del clan.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Narrative Section: Vertical Timeline Style -->
+    <section class="py-16 bg-paper text-deep relative">
+        <div class="container mx-auto px-6 max-w-3xl">
+            
+            <!-- La Scintilla -->
+            <div class="mb-16 relative pl-8 md:pl-0">
+                <div class="hidden md:block absolute left-[-50px] top-0 h-full w-1 bg-lavender/50 rounded"></div>
+                
+                <h2 class="font-display text-3xl font-bold text-primary mb-6 flex items-center gap-3">
+                    <i data-lucide="sun" class="w-8 h-8 text-accent"></i>
+                    La Scintilla
+                </h2>
+                <div class="prose-custom text-lg">
+                    <p class="font-bold text-accent">Sono le 10:30</p>
+                    <p>Il sole picchia e il torrente è in leggera piena dopo le piogge notturne. Federico vuole completare il ponte entro pranzo per inaugurare il percorso di pionieristica nel pomeriggio.</p>
+                    
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-accent my-6">
+                        <p class="italic mb-2 text-gray-700">Giulia, che al mattino ha consultato il bollettino meteo, insiste per rinviare il completamento:</p>
+                        <p class="font-semibold text-primary">«Le piene pomeridiane qui arrivano all’improvviso. Se il livello sale, le funi andranno in torsione».</p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-deep my-6">
+                        <p class="italic mb-2 text-gray-700">Federico ribatte brusco:</p>
+                        <p class="font-semibold text-deep">«Sono anni che faccio campi qui, fidati, non succede nulla. Stai solo rallentando i ragazzi».</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- L'Esplosione -->
+            <div class="mb-16 relative pl-8 md:pl-0">
+                <h2 class="font-display text-3xl font-bold text-primary mb-6 flex items-center gap-3">
+                    <i data-lucide="flame" class="w-8 h-8 text-red-500"></i>
+                    L'Esplosione
+                </h2>
+                <div class="prose-custom text-lg">
+                    <p>Anna prova a proporre una verifica degli ancoraggi, ma le sue parole si perdono nel vuoto. I ragazzi – disposti in gruppetti lungo le sponde – ammutoliscono percependo la tensione.</p>
+                    
+                    <p class="font-bold text-accent mt-4">Alle 11:00</p>
+                    <p>Mentre Giulia obbliga una squadriglia a indossare i caschetti, Federico sbotta:</p>
+                    
+                    <div class="space-y-4 my-6">
+                        <div class="bg-deep/5 p-4 rounded-r-xl border-l-4 border-deep">
+                            <span class="text-xs uppercase font-bold text-gray-500 block mb-1">Federico</span>
+                            «È la centesima volta che correggi quello che faccio davanti ai ragazzi! Così metti in discussione la mia autorità».
+                        </div>
+                        <div class="bg-primary/5 p-4 rounded-l-xl border-r-4 border-primary text-right">
+                            <span class="text-xs uppercase font-bold text-gray-500 block mb-1">Giulia</span>
+                            «È la sicurezza che conta, non il tuo ego!»
+                        </div>
+                    </div>
+                    
+                    <p>Le accuse rimbalzano, il tono diventa personale. Federico sferra la frase:</p>
+                    <p class="font-bold text-deep italic text-xl text-center my-4">«Se non te la senti, torna pure al branco!»</p>
+                    <p>Confondendo volontariamente il suo ruolo con quello di Alice.</p>
+                    
+                    <p class="mt-4">Alice interviene: <span class="italic text-primary">«Fede, facciamo due minuti di pausa e ne parliamo tra capi»</span>, ma Federico taglia corto: <span class="italic text-deep">«Non sei del reparto, lasciaci lavorare»</span>. Il litigio si accende; Lorenzo si frappone tra i due per evitare che si avvicinino troppo.</p>
+                </div>
+            </div>
+
+            <!-- La Conseguenza Immediata -->
+            <div class="mb-16 relative pl-8 md:pl-0">
+                <h2 class="font-display text-3xl font-bold text-primary mb-6 flex items-center gap-3">
+                    <i data-lucide="alert-triangle" class="w-8 h-8 text-accent"></i>
+                    La Conseguenza Immediata
+                </h2>
+                <div class="prose-custom text-lg">
+                    <p class="font-bold text-accent">Alle 11:15</p>
+                    <p>Sopraggiunge Marco, attirato dalle voci. Vede i ragazzi fermi, alcuni con i nodi sospesi a metà, altri che si scambiano sguardi smarriti. Senza neppure salutarli esclama:</p>
+                    
+                    <div class="bg-deep text-white p-6 rounded-lg shadow-xl my-6 text-center">
+                        <i data-lucide="stop-circle" class="w-8 h-8 mx-auto mb-2 text-lavender"></i>
+                        <p class="font-display font-bold text-xl">«Bene, fermate tutto, riunione capi sotto il telone adesso».</p>
+                    </div>
+
+                    <p>I ragazzi restano immobili, in silenzio. Il ponte, a metà fra le rive, dondola leggermente nel vento.</p>
+                </div>
+            </div>
+
+            <!-- Il Post -->
+            <div class="mb-16 relative pl-8 md:pl-0">
+                <h2 class="font-display text-3xl font-bold text-primary mb-6 flex items-center gap-3">
+                    <i data-lucide="message-square" class="w-8 h-8 text-accent"></i>
+                    Il Post
+                </h2>
+                <div class="prose-custom text-lg">
+                    <p>Mentre le squadriglie preparano il pranzo i capi si ritirano in disparte. La tensione è palpabile: anni di incomprensioni e dinamiche irrisolte vengono a galla.</p>
+                    <p>Nel pomeriggio emerge chiaramente come il conflitto non riguardi solo le decisioni del momento, ma nasconda frustrazioni accumulate nel tempo e visioni contrastanti sulla gestione del servizio.</p>
+                    <p>Durante la giornata si percepisce come Federico e Giulia abbiano sviluppato nel tempo un rapporto competitivo, dove ogni decisione diventa terreno di scontro per affermare la propria leadership. Anna, più giovane, si trova spesso schiacciata tra due modi opposti di interpretare il ruolo di capo.</p>
+                </div>
+            </div>
+
+            <!-- Al Fuoco Serale -->
+            <div class="mb-8 relative pl-8 md:pl-0">
+                <h2 class="font-display text-3xl font-bold text-primary mb-6 flex items-center gap-3">
+                    <i data-lucide="moon" class="w-8 h-8 text-deep"></i>
+                    Al Fuoco Serale
+                </h2>
+                <div class="prose-custom text-lg">
+                    <p>Marco cerca di mediare annunciando una pausa di riflessione <span class="italic">"per ricostruire dinamiche più sane nella comunità capi"</span>.</p>
+                    <p>L'atmosfera resta pesante: Federico, isolato, mastica la sua rabbia in un angolo, mentre Giulia, seduta accanto al fuoco, non nasconde il suo risentimento. Gli altri capi percepiscono che questo scontro ha portato alla luce problemi più profondi nella gestione dell'unità, rimasti troppo a lungo inespressi.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Reflection Section -->
+    <section class="py-20 bg-primary text-white">
+        <div class="container mx-auto px-6 max-w-4xl">
+            <div class="text-center mb-12">
+                <h2 class="font-display text-3xl md:text-4xl font-bold text-lavender mb-4">Domande di Riflessione</h2>
+                <div class="w-20 h-1 bg-accent mx-auto rounded-full"></div>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Question 1 -->
+                <div class="bg-deep/40 backdrop-blur border border-lavender/20 p-6 rounded-xl flex gap-4">
+                    <span class="flex-shrink-0 w-8 h-8 bg-accent rounded-full flex items-center justify-center font-bold text-sm">1</span>
+                    <p class="font-light text-lg">Quale tipologia di conflitto riconoscete nella dinamica fra Federico e Giulia? Individuate eventuali conflitti sovrapposti.</p>
+                </div>
+
+                <!-- Question 2 -->
+                <div class="bg-deep/40 backdrop-blur border border-lavender/20 p-6 rounded-xl flex gap-4">
+                    <span class="flex-shrink-0 w-8 h-8 bg-accent rounded-full flex items-center justify-center font-bold text-sm">2</span>
+                    <p class="font-light text-lg">Quali segnali anticipatori, verbali e non verbali, indicavano che la tensione stava crescendo fin dalle prime ore del campo?</p>
+                </div>
+
+                <!-- Question 3 -->
+                <div class="bg-deep/40 backdrop-blur border border-lavender/20 p-6 rounded-xl flex gap-4">
+                    <span class="flex-shrink-0 w-8 h-8 bg-accent rounded-full flex items-center justify-center font-bold text-sm">3</span>
+                    <p class="font-light text-lg">Che ruolo hanno giocato Anna, Alice, Lorenzo e Marco nell’escalation? Cosa avrebbero potuto fare diversamente per contenere o trasformare il conflitto?</p>
+                </div>
+
+                <!-- Question 4 -->
+                <div class="bg-deep/40 backdrop-blur border border-lavender/20 p-6 rounded-xl flex gap-4">
+                    <span class="flex-shrink-0 w-8 h-8 bg-accent rounded-full flex items-center justify-center font-bold text-sm">4</span>
+                    <p class="font-light text-lg">Se foste membri della comunità capi, quali azioni immediate mettereste in atto nelle ore successive per ricomporre la frattura e proseguire le attività?</p>
+                </div>
+
+                <!-- Question 5 -->
+                <div class="bg-deep/40 backdrop-blur border border-lavender/20 p-6 rounded-xl flex gap-4">
+                    <span class="flex-shrink-0 w-8 h-8 bg-accent rounded-full flex items-center justify-center font-bold text-sm">5</span>
+                    <p class="font-light text-lg">Quali interventi a medio-lungo termine proporreste alla comunità capi del Roma 17 per prevenire conflitti simili?</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-deep border-t border-white/5 py-8 text-center text-gray-500 text-sm">
+        <p>Studio per Comunità Capi</p>
+        <p class="mt-2 text-lavender opacity-50">Roma 17</p>
+    </footer>
+
+    <!-- Initialize Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>
