@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programma CCG 2025</title>
+    <!-- Importazione Font Moderni -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <!-- Icone (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Palette Colori Scout/Istituzionale */
+            --primary-blue: #004F9F; /* Blu AGESCI */
+            --primary-dark: #003366;
+            --accent-green: #7FA935; /* Verde Natura */
+            --light-bg: #f4f7f6;
+            --white: #ffffff;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --break-color: #e67e22; /* Arancione per i break/pasti */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        /* --- HEADER --- */
+        header {
+            background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
+            color: var(--white);
+            text-align: center;
+            padding: 3rem 1rem;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        /* --- NAVIGAZIONE TABS --- */
+        .tabs-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: -1.5rem; /* Sovrapposizione header */
+            padding: 0 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: var(--white);
+            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-light);
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-green);
+            color: var(--white);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(127, 169, 53, 0.4);
+        }
+
+        .tab-btn:hover:not(.active) {
+            transform: translateY(-2px);
+            color: var(--primary-blue);
+        }
+
+        /* --- CONTENUTO GIORNATA --- */
+        .day-content {
+            display: none; /* Nascosto di default */
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .day-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- TIMELINE --- */
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        /* Linea verticale */
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+        }
+
+        .event-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary-blue); /* Default border color */
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .event-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        /* Pallino sulla timeline */
+        .event-dot {
+            position: absolute;
+            left: -30px;
+            top: 20px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            border: 3px solid var(--light-bg);
+            z-index: 2;
+        }
+
+        .event-time {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.2rem;
+        }
+
+        .event-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        /* --- STILI SPECIFICI PER TIPO DI ATTIVITÀ --- */
+        
+        /* Pause / Cibo */
+        .type-break {
+            border-left-color: var(--break-color);
+            background-color: #fffaf5;
+        }
+        .type-break .event-dot { background: var(--break-color); }
+        .type-break .event-time { color: var(--break-color); }
+        .type-break .event-title { font-size: 1rem; opacity: 0.9; }
+
+        /* Spiritualità / Catechesi / Messa */
+        .type-spirit {
+            border-left-color: #9b59b6; /* Viola liturgico */
+        }
+        .type-spirit .event-dot { background: #9b59b6; }
+        .type-spirit .event-time { color: #9b59b6; }
+
+        /* Sera / Giochi */
+        .type-night {
+            border-left-color: #34495e;
+            background: #fdfdfd;
+        }
+        .type-night .event-dot { background: #34495e; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            .tab-btn { padding: 0.8rem 1rem; font-size: 0.9rem; flex: 1 1 auto; text-align: center;}
+            .event-card { padding: 1rem; }
+            .timeline { padding-left: 25px; }
+            .timeline::before { left: 5px; }
+            .event-dot { left: -26px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <h1>Programma CCG 2025</h1>
+            <p><i class="fas fa-campground"></i> Campo di Formazione Capi Gruppo</p>
+        </div>
+    </header>
+
+    <!-- Navigazione Giornate -->
+    <div class="tabs-container">
+        <button class="tab-btn active" onclick="openDay('day1')">
+            Sab 6 Dic
+        </button>
+        <button class="tab-btn" onclick="openDay('day2')">
+            Dom 7 Dic
+        </button>
+        <button class="tab-btn" onclick="openDay('day3')">
+            Lun 8 Dic
+        </button>
+    </div>
+
+    <!-- GIORNO 1 -->
+    <div id="day1" class="day-content active">
+        <div class="timeline">
+            
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 09:00</div>
+                <div class="event-title">Accoglienza</div>
+                <div class="event-subtitle">Sistemazione e benvenuto</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 10:00</div>
+                <div class="event-title">Inizio Campo e Cerimonia</div>
+                <div class="event-subtitle">Presentazione Capi e Contratto Formativo</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 11:30</div>
+                <div class="event-title">Il Ruolo del Capo Gruppo</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 12:00</div>
+                <div class="event-title">Ascoltare e Comunicare</div>
+            </div>
+
+            <div class="event-card type-break">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-utensils"></i> 13:00</div>
+                <div class="event-title">Pranzo</div>
+                <div class="event-subtitle">Pranzo al sacco condiviso</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 14:00</div>
+                <div class="event-title">Gestione delle Riunioni</div>
+            </div>
+
+            <div class="event-card type-spirit">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-church"></i> 15:00</div>
+                <div class="event-title">Catechesi: Io e Dio</div>
+                <div class="event-subtitle">Relazione e ascolto della Parola</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 16:00</div>
+                <div class="event-title">Gestione dei conflitti</div>
+            </div>
+
+            <div class="event-card type-break">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-mug-hot"></i> 17:00</div>
+                <div class="event-title">Break</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 17:30</div>
+                <div class="event-title">Relazioni etiche, sane, di cura</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 18:15</div>
+                <div class="event-title">Gioco di Ruolo</div>
+                <div class="event-subtitle">Dinamiche di gruppo</div>
+            </div>
+
+            <div class="event-card type-spirit">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-user-friends"></i> 19:15</div>
+                <div class="event-title">Testimonianza</div>
+            </div>
+
+            <div class="event-card type-break">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-utensils"></i> 20:00</div>
+                <div class="event-title">Cena</div>
+            </div>
+
+            <div class="event-card type-night">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-film"></i> 21:00</div>
+                <div class="event-title">Cineforum</div>
+            </div>
+
+            <div class="event-card type-spirit">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-moon"></i> 23:00</div>
+                <div class="event-title">Preghiera finale</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GIORNO 2 -->
+    <div id="day2" class="day-content">
+        <div class="timeline">
+            
+            <div class="event-card type-spirit">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-church"></i> 07:30</div>
+                <div class="event-title">Messa e Colazione</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 09:00</div>
+                <div class="event-title">Dinamiche di gruppo</div>
+                <div class="event-subtitle">Modello Belbin e ruoli</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 09:45</div>
+                <div class="event-title">Rapporto con le Famiglie & Social</div>
+                <div class="event-subtitle">Patto educativo e responsabilità</div>
+            </div>
+
+            <div class="event-card type-break">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-mug-hot"></i> 10:30</div>
+                <div class="event-title">Break</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 11:00</div>
+                <div class="event-title">Associazione e Zona</div>
+                <div class="event-subtitle">Importanza della partecipazione</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 11:45</div>
+                <div class="event-title">Bilancio e Terzo Settore</div>
+            </div>
+
+            <div class="event-card type-break">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-utensils"></i> 13:00</div>
+                <div class="event-title">Pranzo</div>
+            </div>
+
+            <div class="event-card type-spirit">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-users"></i> 14:00</div>
+                <div class="event-title">Chi è l'adulto nella fede</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 15:00</div>
+                <div class="event-title">Rapporti con Chiesa e Istituzioni</div>
+            </div>
+
+            <div class="event-card type-break">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-mug-hot"></i> 16:00</div>
+                <div class="event-title">Break</div>
+            </div>
+
+            <div class="event-card type-spirit">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-bible"></i> 16:30</div>
+                <div class="event-title">Catechesi: Custodire le Relazioni</div>
+                <div class="event-subtitle">Check-up della comunità</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-balance-scale"></i> 17:30</div>
+                <div class="event-title">Responsabilità Civile e Penale</div>
+            </div>
+
+            <div class="event-card type-break">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-mug-hot"></i> 18:45</div>
+                <div class="event-title">Break</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 19:00</div>
+                <div class="event-title">Giustizia, Pace e Non Violenza</div>
+            </div>
+
+            <div class="event-card type-break">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-utensils"></i> 20:00</div>
+                <div class="event-title">Cena</div>
+            </div>
+
+            <div class="event-card type-night">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-dice"></i> 21:00</div>
+                <div class="event-title">Gioco dell'Oca</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GIORNO 3 -->
+    <div id="day3" class="day-content">
+        <div class="timeline">
+
+            <div class="event-card type-spirit">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-church"></i> 07:30</div>
+                <div class="event-title">Messa e Colazione</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 09:00</div>
+                <div class="event-title">Introduzione ai Progetti</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="far fa-clock"></i> 10:15</div>
+                <div class="event-title">Progetto Educativo</div>
+                <div class="event-subtitle">Rapporti con il territorio</div>
+            </div>
+
+            <div class="event-card type-break">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-mug-hot"></i> 11:15</div>
+                <div class="event-title">Break</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-user-graduate"></i> 11:30</div>
+                <div class="event-title">Progetto del Capo / Formazione 1</div>
+                <div class="event-subtitle">Lettura dei bisogni formativi</div>
+            </div>
+
+            <div class="event-card type-break">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-utensils"></i> 13:00</div>
+                <div class="event-title">Pranzo</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-user-graduate"></i> 14:00</div>
+                <div class="event-title">Progetto del Capo / Formazione 2</div>
+                <div class="event-subtitle">Dal PdC al percorso di formazione</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-check-circle"></i> 15:30</div>
+                <div class="event-title">Verifica Personale</div>
+            </div>
+
+            <div class="event-card type-spirit">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-heart"></i> 16:00</div>
+                <div class="event-title">Catechesi: Stile relazionale di Gesù</div>
+            </div>
+
+            <div class="event-card">
+                <div class="event-dot"></div>
+                <div class="event-time"><i class="fas fa-flag"></i> 17:00</div>
+                <div class="event-title">Chiusura Campo</div>
+                <div class="event-subtitle">Cerimonia finale</div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function openDay(dayId) {
+            // 1. Nascondi tutti i contenuti delle giornate
+            var contents = document.getElementsByClassName('day-content');
+            for (var i = 0; i < contents.length; i++) {
+                contents[i].classList.remove('active');
+            }
+
+            // 2. Rimuovi lo stato "active" da tutti i bottoni
+            var buttons = document.getElementsByClassName('tab-btn');
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].classList.remove('active');
+            }
+
+            // 3. Mostra la giornata selezionata e attiva il bottone
+            document.getElementById(dayId).classList.add('active');
+            
+            // Trova il bottone cliccato (usando l'evento corrente o logicamente)
+            var clickedBtn = event.currentTarget;
+            clickedBtn.classList.add('active');
+        }
+    </script>
+</body>
+</html>
