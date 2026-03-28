@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gestione Botteghe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #e2e8f0; /* Darker bg for desktop */
+            color: var(--text-main);
+            line-height: 1.5;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Mobile App Container Simulation */
+        #app-container {
+            width: 100%;
+            max-width: 480px;
+            background-color: var(--background);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 20px 20px 30px 20px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            min-height: 90px;
+        }
+
+        #back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: background var(--transition-speed);
+            position: absolute;
+            left: 20px;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-10px);
+            z-index: 20;
+        }
+
+        #back-btn:active {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        #main-title {
+            font-size: 24px;
+            font-weight: 700;
+            width: 100%;
+            text-align: center;
+            transition: transform var(--transition-speed);
+        }
+
+        /* Views */
+        .view {
+            flex: 1;
+            padding: 20px;
+            position: absolute;
+            top: 90px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 90px);
+            overflow-y: auto;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+        }
+
+        /* Home View */
+        #home-view {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        #home-view.hidden-left {
+            transform: translateX(-30%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .botteghe-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding-bottom: 40px;
+        }
+
+        .bottega-card {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(0,0,0,0.02);
+        }
+
+        .bottega-card:active {
+            transform: scale(0.97);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .bottega-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .bottega-info h3 {
+            font-size: 18px;
+            color: var(--text-main);
+            margin-bottom: 4px;
+            text-transform: capitalize;
+        }
+
+        .bottega-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .chevron {
+            margin-left: auto;
+            color: #cbd5e1;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        /* Detail View */
+        #detail-view {
+            transform: translateX(100%);
+            opacity: 0;
+            pointer-events: none;
+            background-color: var(--background);
+        }
+
+        #detail-view.active {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .detail-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 10px;
+        }
+
+        #detail-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        #detail-bottega-name {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-transform: capitalize;
+        }
+
+        .turns-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding-bottom: 40px;
+        }
+
+        .turn-section {
+            background: var(--surface);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+
+        .turn-btn {
+            width: 100%;
+            padding: 20px;
+            background: transparent;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: inherit;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-main);
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .turn-btn:active {
+            background-color: #f1f5f9;
+        }
+
+        .turn-icon {
+            transition: transform var(--transition-speed);
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        .turn-section.open .turn-icon {
+            transform: rotate(180deg);
+        }
+
+        .participants-list {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0, 1, 0, 1);
+            background-color: #f8fafc;
+        }
+
+        .turn-section.open .participants-list {
+            max-height: 1000px; /* Arbitrary large number for transition */
+            transition: max-height 0.5s ease-in-out;
+        }
+
+        .participants-inner {
+            padding: 0 20px 20px 20px;
+        }
+
+        .participant-item {
+            padding: 12px 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 15px;
+            animation: fadeIn 0.3s ease forwards;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .participant-item:last-child {
+            border-bottom: none;
+        }
+
+        .participant-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--primary-light);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 20px;
+            font-style: italic;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scrollbar styling for webkit */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+        <header>
+            <button id="back-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Indietro
+            </button>
+            <h1 id="main-title">Botteghe</h1>
+        </header>
+
+        <!-- Home View: Elenco Botteghe -->
+        <main id="home-view" class="view">
+            <div class="botteghe-grid" id="botteghe-container">
+                <!-- Le card verranno generate qui da JS -->
+            </div>
+        </main>
+
+        <!-- Detail View: Dettaglio singola Bottega -->
+        <main id="detail-view" class="view">
+            <div class="detail-header">
+                <div id="detail-icon">🎨</div>
+                <h2 id="detail-bottega-name">Nome Bottega</h2>
+            </div>
+
+            <div class="turns-container">
+                <!-- Primo Turno -->
+                <div class="turn-section" id="section-turno-1">
+                    <button class="turn-btn" onclick="toggleTurn('turno-1')">
+                        Primo Turno
+                        <span class="turn-icon">▼</span>
+                    </button>
+                    <div class="participants-list">
+                        <div class="participants-inner" id="list-turno-1">
+                            <!-- Partecipanti primo turno -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Secondo Turno -->
+                <div class="turn-section" id="section-turno-2">
+                    <button class="turn-btn" onclick="toggleTurn('turno-2')">
+                        Secondo Turno
+                        <span class="turn-icon">▼</span>
+                    </button>
+                    <div class="participants-list">
+                        <div class="participants-inner" id="list-turno-2">
+                            <!-- Partecipanti secondo turno -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- DATI INCORPORATI ---
+        // Dati strutturati estratti dai fogli Excel forniti
+        const bottegheData = {
+            "geologo": {
+                icon: "🌍",
+                color: "linear-gradient(135deg, #f59e0b, #d97706)",
+                turni: {
+                    1: ["Nicola", "Pietro Cri", "Victor", "Giulia", "Miriam", "Stefano"],
+                    2: ["Matteo R", "Mattia", "Marco Cri", "Serafina", "Denisa", "Cristiano"]
+                }
+            },
+            "redattore": {
+                icon: "✍️",
+                color: "linear-gradient(135deg, #ef4444, #b91c1c)",
+                turni: {
+                    1: ["Matteo A", "Cecilia", "Luigi", "Sole", "Caterina"],
+                    2: ["Giacomo", "Bianca", "M Sole", "Miriam", "Santiago", "Stefano"]
+                }
+            },
+            "elettricista": {
+                icon: "⚡",
+                color: "linear-gradient(135deg, #eab308, #a16207)",
+                turni: {
+                    1: ["Giacomo", "Vincenzo", "Rachele", "Cristiano"],
+                    2: ["Mario", "Giulia", "Pietro Cri", "Dario", "Charlotte", "Caterina"]
+                }
+            },
+            "amico del quartiere": {
+                icon: "🤝",
+                color: "linear-gradient(135deg, #10b981, #047857)",
+                turni: {
+                    1: ["Luca", "Mario", "Gabriel", "Alex", "M Sole", "Viola"],
+                    2: ["Matteo F", "Matteo A", "Victor", "Marco T", "Cloe", "Luigi"]
+                }
+            },
+            "botanico": {
+                icon: "🌿",
+                color: "linear-gradient(135deg, #84cc16, #4d7c0f)",
+                turni: {
+                    1: ["Agata Santini", "Andrea De Carlo", "David Spagnolo", "Amelia Giovanardi", "Daniel Sinisgalli"],
+                    2: ["Nora Isoldi", "Lucilla Di Leo", "Giorgio Como", "Assia Gargiulo Rodotà", "Olimpia Fiore", "Edoardo Sagrati"]
+                }
+            },
+            "ripara e ricicla": {
+                icon: "♻️",
+                color: "linear-gradient(135deg, #14b8a6, #0f766e)",
+                turni: {
+                    1: ["Matteo Bisogni", "Dario Comparelli", "Chiara Verde", "Martino Della Zuanna", "Alice De Giorgi Di Bella", "Zeno Martini"],
+                    2: ["Lidia Cusimano", "Edoardo Cuppone", "Diletta Maria Salimei", "Valerio Lorenzatti", "Diego Di Piramo"]
+                }
+            },
+            "cercatore di tracce": {
+                icon: "🔎",
+                color: "linear-gradient(135deg, #6366f1, #4338ca)",
+                turni: {
+                    1: ["Luca Alberini", "Lucilla Di Leo", "Giorgio Como", "Assia Gargiulo Rodotà", "Edoardo Sagrati", "Pietro Masala"],
+                    2: ["Matteo Bisogni", "Dario Comparelli", "Martino Della Zuanna", "Alice De Giorgi Di Bella", "Zeno Martini"]
+                }
+            },
+            "maestro di giochi": {
+                icon: "🎲",
+                color: "linear-gradient(135deg, #8b5cf6, #6d28d9)",
+                turni: {
+                    1: ["Lidia Cusimano", "Giorgio Volpato", "Diletta Maria Salimei", "Gabriele De Giorgi Di Bella", "Olimpia Fiore"],
+                    2: ["Vivien Lorenzatti", "Mariaelena Sansoni", "Daniel Sinisgalli", "Martino Bellomi"]
+                }
+            },
+            "attore": {
+                icon: "🎭",
+                color: "linear-gradient(135deg, #ec4899, #be185d)",
+                turni: {
+                    1: ["Vivien Lorenzatti", "Mariaelena Sansoni", "Giulio Guerci", "Agata Bisogni", "Martino Bellomi"],
+                    2: ["Nicola", "Luca", "Vincenzo", "Rachele", "Sole Tonino"]
+                }
+            },
+            "fotografo": {
+                icon: "📸",
+                color: "linear-gradient(135deg, #06b6d4, #0369a1)",
+                turni: {
+                    1: ["Matteo R", "Dario", "Mattia", "Marco T", "Serafina", "Charlotte", "Denise", "Cloe"],
+                    2: ["Agata Santini", "Andrea De Carlo", "David Spagnolo", "Amelia Giovanardi", "Gabriele De Giorgi Di Bella", "Giorgio Volpato"]
+                }
+            },
+            "giocatore di squadra": {
+                icon: "⚽",
+                color: "linear-gradient(135deg, #f43f5e, #be123c)",
+                turni: {
+                    1: ["Nora Isoldi", "Edoardo Cuppone", "Diego Di Piramo", "Alma Vicinelli Polucci", "Valerio Lorenzatti"],
+                    2: ["Alex", "Cecilia", "Pietro", "Altri Partecipanti..."]
+                }
+            }
+        };
+
+        // --- LOGICA UI ---
+        const homeView = document.getElementById('home-view');
+        const detailView = document.getElementById('detail-view');
+        const backBtn = document.getElementById('back-btn');
+        const mainTitle = document.getElementById('main-title');
+        const bottegheContainer = document.getElementById('botteghe-container');
+
+        // Inizializza la schermata Home
+        function initApp() {
+            bottegheContainer.innerHTML = '';
+            
+            for (const [nome, dati] of Object.entries(bottegheData)) {
+                // Calcola totale partecipanti
+                const tot1 = dati.turni[1] ? dati.turni[1].length : 0;
+                const tot2 = dati.turni[2] ? dati.turni[2].length : 0;
+                const totPartecipanti = tot1 + tot2;
+
+                const card = document.createElement('div');
+                card.className = 'bottega-card';
+                card.onclick = () => openBottega(nome);
+                card.innerHTML = `
+                    <div class="bottega-icon" style="background: ${dati.color}">${dati.icon}</div>
+                    <div class="bottega-info">
+                        <h3>${nome}</h3>
+                        <p>${totPartecipanti} partecipanti totali</p>
+                    </div>
+                    <div class="chevron">›</div>
+                `;
+                bottegheContainer.appendChild(card);
+            }
+        }
+
+        // Apre il dettaglio di una bottega
+        function openBottega(nomeBottega) {
+            const dati = bottegheData[nomeBottega];
+            if (!dati) return;
+
+            // Aggiorna UI del dettaglio
+            document.getElementById('detail-icon').textContent = dati.icon;
+            document.getElementById('detail-bottega-name').textContent = nomeBottega;
+            
+            // Popola le liste
+            renderList('list-turno-1', dati.turni[1]);
+            renderList('list-turno-2', dati.turni[2]);
+
+            // Resetta lo stato delle sezioni (chiuse di default)
+            document.getElementById('section-turno-1').classList.remove('open');
+            document.getElementById('section-turno-2').classList.remove('open');
+
+            // Transizione view
+            homeView.classList.add('hidden-left');
+            detailView.classList.add('active');
+            
+            // Aggiorna Header
+            backBtn.style.opacity = '1';
+            backBtn.style.pointerEvents = 'auto';
+            backBtn.style.transform = 'translateX(0)';
+            mainTitle.style.transform = 'translateX(10px)';
+            mainTitle.textContent = "Dettaglio";
+            
+            // Scroll to top
+            detailView.scrollTop = 0;
+        }
+
+        // Torna alla schermata principale
+        backBtn.addEventListener('click', () => {
+            homeView.classList.remove('hidden-left');
+            detailView.classList.remove('active');
+            
+            backBtn.style.opacity = '0';
+            backBtn.style.pointerEvents = 'none';
+            backBtn.style.transform = 'translateX(-10px)';
+            mainTitle.style.transform = 'translateX(0)';
+            mainTitle.textContent = "Botteghe";
+        });
+
+        // Gestisce l'apertura/chiusura dei turni (Accordion)
+        function toggleTurn(turnId) {
+            const section = document.getElementById(`section-${turnId}`);
+            section.classList.toggle('open');
+            
+            // Effetto cascata sull'animazione dei nomi
+            if (section.classList.contains('open')) {
+                const items = section.querySelectorAll('.participant-item');
+                items.forEach((item, index) => {
+                    item.style.animationDelay = `${index * 0.05}s`;
+                });
+            }
+        }
+
+        // Renderizza la lista HTML dei partecipanti
+        function renderList(containerId, partecipantiArray) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            if (!partecipantiArray || partecipantiArray.length === 0) {
+                container.innerHTML = `<div class="empty-state">Nessun partecipante in questo turno</div>`;
+                return;
+            }
+
+            partecipantiArray.forEach(nome => {
+                const initial = nome.trim().charAt(0).toUpperCase();
+                const div = document.createElement('div');
+                div.className = 'participant-item';
+                div.innerHTML = `
+                    <div class="participant-avatar">${initial}</div>
+                    <div>${nome.trim()}</div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Avvio app
+        initApp();
+
+    </script>
+</body>
+</html>
