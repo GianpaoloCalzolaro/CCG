@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partenza di Chiara - 3 Aprile 2026</title>
+    
+    <!-- Importazione Font Istituzionali AGESCI (Roboto e Roboto Slab) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@300;400;500;700&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           DESIGN SYSTEM & VARIABILI AGESCI
+           ========================================= */
+        :root {
+            /* Colori Ufficiali */
+            --agesci-viola: #462678;
+            --agesci-giallo: #FDC500;
+            --agesci-viola-scuro: #211638;
+            --agesci-viola-medio: #6B478D;
+            --agesci-lilla: #9B66A5;
+            --agesci-azzurro: #92B3D7;
+            --agesci-verde: #21A067;
+            --agesci-rosso: #E74030;
+            --agesci-beige: #E5D6C7;
+            --agesci-grigio: #ECE9E6;
+            
+            /* Colori Strutturali */
+            --bg-color: #FAFAFA;
+            --surface-color: #FFFFFF;
+            --text-main: #2C2C2C;
+            --text-muted: #555555;
+            
+            /* Tipografia */
+            --font-body: 'Roboto', sans-serif;
+            --font-heading: 'Roboto Slab', serif;
+            
+            /* Spaziature e Dimensioni */
+            --radius-md: 12px;
+            --radius-lg: 24px;
+            --shadow-soft: 0 8px 24px rgba(70, 38, 120, 0.08);
+            --shadow-hover: 0 12px 32px rgba(70, 38, 120, 0.12);
+            --transition-smooth: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* =========================================
+           RESET & IMPOSTAZIONI BASE
+           ========================================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Progress Bar in alto */
+        #scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background-color: var(--agesci-giallo);
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+
+        /* =========================================
+           HERO SECTION (Intestazione)
+           ========================================= */
+        .hero {
+            background-color: var(--agesci-viola-scuro);
+            color: white;
+            padding: 80px 24px 60px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom-left-radius: 32px;
+            border-bottom-right-radius: 32px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        /* Pattern decorativo leggero */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(circle at 20% 150%, var(--agesci-viola) 0%, transparent 50%),
+                              radial-gradient(circle at 80% -50%, var(--agesci-viola-medio) 0%, transparent 50%);
+            opacity: 0.6;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-family: var(--font-body);
+            font-weight: 300;
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--agesci-beige);
+            margin-bottom: 8px;
+            animation: fadeInDown 0.8s ease forwards;
+        }
+
+        .hero h1 {
+            font-family: var(--font-heading);
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--agesci-giallo);
+            margin-bottom: 16px;
+            line-height: 1.1;
+            animation: fadeIn 1s ease forwards 0.3s;
+            opacity: 0;
+        }
+
+        .hero .date-location {
+            font-size: 1rem;
+            color: var(--agesci-lilla);
+            margin-bottom: 40px;
+            font-weight: 400;
+            animation: fadeIn 1s ease forwards 0.6s;
+            opacity: 0;
+        }
+
+        .hero blockquote {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-style: italic;
+            line-height: 1.5;
+            color: var(--surface-color);
+            position: relative;
+            padding: 0 20px;
+            animation: fadeInUp 1s ease forwards 0.9s;
+            opacity: 0;
+        }
+
+        /* =========================================
+           LAYOUT PRINCIPALE E CONTROLLI
+           ========================================= */
+        main {
+            max-width: 768px;
+            margin: 0 auto;
+            padding: 32px 20px 100px;
+        }
+
+        .global-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 0 8px;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: var(--agesci-viola);
+            font-family: var(--font-body);
+            font-weight: 500;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: var(--radius-md);
+            transition: background 0.3s;
+        }
+
+        .control-btn:hover, .control-btn:focus {
+            background-color: var(--agesci-beige);
+            outline: none;
+        }
+
+        /* =========================================
+           ACCORDION (Fisarmonica per le sezioni)
+           ========================================= */
+        .accordion-item {
+            background-color: var(--surface-color);
+            border-radius: var(--radius-lg);
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-soft);
+            overflow: hidden;
+            transition: var(--transition-smooth);
+            border: 1px solid var(--agesci-grigio);
+        }
+
+        .accordion-item.active {
+            box-shadow: var(--shadow-hover);
+            border-color: var(--agesci-lilla);
+        }
+
+        .accordion-header {
+            width: 100%;
+            text-align: left;
+            padding: 24px;
+            background: none;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            color: var(--agesci-viola-scuro);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--agesci-beige);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--agesci-viola);
+            flex-shrink: 0;
+            transition: var(--transition-smooth);
+        }
+
+        .accordion-item.active .section-icon {
+            background-color: var(--agesci-viola);
+            color: var(--agesci-giallo);
+        }
+
+        .accordion-title {
+            font-family: var(--font-heading);
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .toggle-icon {
+            width: 24px;
+            height: 24px;
+            position: relative;
+            flex-shrink: 0;
+            color: var(--agesci-viola);
+            transition: transform 0.4s ease;
+        }
+
+        .accordion-item.active .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Animazione contenitore Grid per transizione fluida dell'altezza */
+        .accordion-collapse {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .accordion-item.active .accordion-collapse {
+            grid-template-rows: 1fr;
+        }
+
+        .accordion-body {
+            overflow: hidden;
+        }
+
+        .accordion-content {
+            padding: 0 24px 32px 24px;
+            font-size: 1.05rem;
+            line-height: 1.7;
+            color: var(--text-main);
+        }
+
+        /* Stile per preservare gli a capo esatti del testo allegato */
+        .original-text {
+            white-space: pre-wrap;
+            font-family: var(--font-body);
+        }
+
+        /* Stile citazioni interne al testo */
+        .original-text blockquote {
+            margin: 20px 0;
+            padding-left: 16px;
+            border-left: 4px solid var(--agesci-giallo);
+            font-family: var(--font-heading);
+            font-style: italic;
+            color: var(--text-muted);
+        }
+
+        /* =========================================
+           INDICE FLOTTANTE (Mobile Navigation)
+           ========================================= */
+        .fab-index {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: var(--agesci-viola);
+            color: var(--surface-color);
+            border: none;
+            box-shadow: 0 4px 16px rgba(70, 38, 120, 0.4);
+            cursor: pointer;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition-smooth);
+        }
+
+        .fab-index:hover, .fab-index:focus {
+            transform: scale(1.05);
+            background-color: var(--agesci-viola-scuro);
+            outline: none;
+        }
+
+        .index-menu {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            background: var(--surface-color);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-hover);
+            width: 280px;
+            max-height: 60vh;
+            overflow-y: auto;
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: var(--transition-smooth);
+            border: 1px solid var(--agesci-grigio);
+        }
+
+        .index-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .index-menu ul {
+            list-style: none;
+            padding: 8px 0;
+        }
+
+        .index-menu li a {
+            display: block;
+            padding: 12px 20px;
+            color: var(--agesci-viola-scuro);
+            text-decoration: none;
+            font-family: var(--font-heading);
+            font-size: 0.95rem;
+            border-left: 3px solid transparent;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .index-menu li a:hover, .index-menu li a:focus {
+            background-color: var(--agesci-beige);
+            border-left-color: var(--agesci-giallo);
+            outline: none;
+        }
+
+        /* =========================================
+           FOOTER
+           ========================================= */
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--agesci-viola-medio);
+            font-family: var(--font-heading);
+            font-style: italic;
+        }
+
+        .scout-symbol-footer {
+            margin-top: 16px;
+            color: var(--agesci-giallo);
+        }
+
+        /* =========================================
+           ANIMAZIONI
+           ========================================= */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================
+           MEDIA QUERIES (Adattamento Tablet/Desktop)
+           ========================================= */
+        @media (min-width: 768px) {
+            .hero { padding: 100px 40px 80px; }
+            .hero h1 { font-size: 4.5rem; }
+            .hero blockquote { font-size: 1.5rem; }
+            
+            main { padding: 48px 40px 120px; }
+            .accordion-header { padding: 32px; }
+            .accordion-content { padding: 0 32px 40px 32px; font-size: 1.1rem; }
+            
+            .fab-index {
+                width: 64px; height: 64px;
+                bottom: 40px; right: 40px;
+            }
+            .index-menu {
+                bottom: 120px; right: 40px; width: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Progress Bar -->
+    <div id="scroll-progress"></div>
+
+    <!-- Hero Section: Titolo e Citazione di apertura -->
+    <header class="hero" id="inizio">
+        <div class="hero-content">
+            <h2>Partenza di</h2>
+            <h1>Chiara</h1>
+            <div class="date-location">Napoli, 3 aprile 2026</div>
+            <blockquote>
+                "Sei tu che devi vivere la tua vita... nessun altro può farlo per te.<br>
+                E nel viaggio della vita, devi spingere la canoa con la pagaia,<br>
+                non remare come in una barca.<br><br>
+                Guida la tua canoa, non contare sull'aiuto degli altri"
+            </blockquote>
+        </div>
+    </header>
+
+    <main>
+        <!-- Controlli Globali -->
+        <div class="global-controls">
+            <button class="control-btn" id="btn-expand-all">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"></polyline><polyline points="7 6 12 11 17 6"></polyline></svg>
+                Apri tutto
+            </button>
+            <button class="control-btn" id="btn-collapse-all">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 12 6 7 11"></polyline><polyline points="17 18 12 13 7 18"></polyline></svg>
+                Chiudi tutto
+            </button>
+        </div>
+
+        <!-- ACCORDION CONTAINER -->
+        <div id="content-accordion">
+
+            <!-- SEZIONE 1 -->
+            <article class="accordion-item" id="sec-route">
+                <button class="accordion-header" aria-expanded="false">
+                    <div class="header-content">
+                        <div class="section-icon">
+                            <!-- Icona Strada/Canto -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                        </div>
+                        <h3 class="accordion-title">E' di nuovo route</h3>
+                    </div>
+                    <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="accordion-collapse">
+                    <div class="accordion-body">
+                        <div class="accordion-content original-text">E' di nuovo route
+
+Viene il giorno in cui
+
+chiedi a te stesso dove voli
+ viene il tempo in cui ti guardi
+
+e i tuoi sogni son caduti
+
+E' il momento di rischiare
+
+di decidere da soli
+
+non fermarsi e lottare
+
+per non essere abbattuti
+
+Spingerò i miei passi sulla strada
+ passerò tra i rovi e l'erba alta
+ la gioia m'ha trovato la pienezza
+ non starò più seduto ad aspettare
+
+$\hat{E}$ parola come vento
+
+tra le porte quella stretta
+ gli uni gli altri nell'amore
+ non avere che un canto
+ questo tempo non ha niente
+ da offrire a chi aspetta
+ prende tutto prende dentro
+ sai fin dove non sai quanto.
+
+Spingerò...
+
+Non è strada di chi parte
+ e già vuole arrivare
+ non la strada dei sicuri
+
+dei sicuri di riuscire
+
+non è fatta per chi è fermo
+
+per chi non vuol cambiare
+
+E' la strada di chi parte
+ ed arriva per partire.
+
+Spingerò..</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SEZIONE 2 -->
+            <article class="accordion-item" id="sec-accetto">
+                <button class="accordion-header" aria-expanded="false">
+                    <div class="header-content">
+                        <div class="section-icon">
+                            <!-- Icona Preghiera/Mani -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path><path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path><path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path><path d="M6 14v-1a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v4a9 9 0 0 0 9 9h3a9 9 0 0 0 9-9v-4.5a2.5 2.5 0 0 0-2.5-2.5v0a2.5 2.5 0 0 0-2.5 2.5V11"></path></svg>
+                        </div>
+                        <h3 class="accordion-title">Quello che Tu mi dai, io lo accetto</h3>
+                    </div>
+                    <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="accordion-collapse">
+                    <div class="accordion-body">
+                        <div class="accordion-content original-text">Quello che Tu mi dai, io lo accetto
+
+Quello che Tu mi dai io lo accetto, felice, felice di questa offerta inattesa
+ che mi viene fatta. Quello che Tu mi rifiuti, lo accetto ancora, sapendo
+ che sei padrone dei Tuoi beni, libero di dare come vuoi, quando vuoi, a
+ chi vuoi. Dammi soltanto un po' di volontà, perché possa affrontare la
+ lotta quotidiana e io compia il mio lavoro serenamente, fino in fondo.
+ Dammi soltanto un po' d'intelligenza, perché io comprenda quello che fa
+ soffrire gli uomini e vada loro incontro, non per giudicarli né per
+ condannarli, ma per rispettarli ed aiutarli, con semplicità, come posso.
+ Dammi soltanto un po' di pazienza, perché io sopporti il mio simile
+ senza urtarlo; lasciando che passi la giornata, e poi l'anno, prima di
+ cogliere il fiore sbocciato o il frutto maturo. Dammi soltanto un po' della
+ tua bontà, perché io pensi alla felicità degli altri, prima di pensare alla
+ mia; alla gioia degli altri, prima della mia. Dammi soltanto un po' di
+ bontà. Quello che Tu mi dai io l'accetto, felice, felice di questa offerta
+ inattesa che mi viene fatta. Quello che Tu mi rifiuti, lo accetto ancora,
+ sapendo che sei padrone dei Tuoi beni, libero di dare come vuoi, quando
+ vuoi, a chi vuoi.</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SEZIONE 3 -->
+            <article class="accordion-item" id="sec-benedizione">
+                <button class="accordion-header" aria-expanded="false">
+                    <div class="header-content">
+                        <div class="section-icon">
+                            <!-- Icona Sole/Vento -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        </div>
+                        <h3 class="accordion-title">Benedizione Irlandese</h3>
+                    </div>
+                    <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="accordion-collapse">
+                    <div class="accordion-body">
+                        <div class="accordion-content original-text">Benedizione Irlandese
+
+Ho tanti sogni dentro al cuore che vorrei realizzare,
+ uno per tutti quello di lasciare il mondo un po' migliore.
+ Fratelli e storie da ascoltare, da capire, da abbracciare.
+ Giorno per giorno dare senso ad ogni istante del mio esistere.
+
+Soffi il vento alle tue spalle piano.
+
+Splenda il sole sopra al volto tuo sereno.
+
+E con la rugiada su ogni mattino
+
+ti sia sempre lieto il cammino.
+
+Voglia Iddio tenerti nel palmo della mano.
+
+Di questo nostro stare insieme semplice io so gioire.
+
+E' il tuo sorriso che mi avvolge, mi riscalda, mi fa sperare.
+
+Nel bene che mi vuoi da sempre e che  per sempre posso credere.
+
+Con te, Signore, che cammini al mio fianco voglio vivere.
+
+Soffi il vento alle tue spalle piano.
+
+Splenda il sole sopra al volto tuo sereno.
+ E con la rugiada su ogni mattino
+
+ti sia sempre lieto il cammino.
+
+Voglia Iddio tenerti nel palmo della mano.</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SEZIONE 4 -->
+            <article class="accordion-item" id="sec-pronta">
+                <button class="accordion-header" aria-expanded="false">
+                    <div class="header-content">
+                        <div class="section-icon">
+                            <!-- Icona Bussola/Giglio (Estote Parati) -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon></svg>
+                        </div>
+                        <h3 class="accordion-title">Sii pronta</h3>
+                    </div>
+                    <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="accordion-collapse">
+                    <div class="accordion-body">
+                        <div class="accordion-content original-text">Sii pronta
+
+Essere pronta, non vuol dire essere preparata; non vuol dire aver previsto
+ tutto; questo è impossibile; nessuno può farlo. La vita è troppo grande,
+ troppo sconosciuta ancora, perché l'uomo possa dire: "So cosa mi aspetta,
+ voglio prepararmi". È ancora troppo forte. Viene con una violenza, con un
+ impeto che non risparmia nulla.
+
+Tutto è scompigliato; i nostri progetti, i nostri piani, i nostri programmi,
+ e talvolta il fine stesso che ci eravamo proposti. Allora, se non siamo
+ pronti, avremo il coraggio e la volontà di ricostruire, sulle rovine dei nostri
+ sogni, altri sogni, altri progetti, un nuovo edificio?
+
+Essere pronta, non vuol dire essere preparata; non vuol dire aver previsto
+ tutto; questo è impossibile; nessuno può farlo. Essere pronta, vuol dire
+ accettare la vita, vuol dire andare incontro al nuovo giorno; tendere le
+ braccia verso la sua ricchezza sconosciuta; stare di fronte alle ore che
+ vengono, calma e serena; vuol dire vivere il presente con forza, coraggio e
+ buona volontà, senza temere il domani, né quel che accadrà dopodomani;
+ né quel che può accadere in un lontano futuro. Il domani non è tuo. Forse
+ ti sarà rifiutato. Perché ti esaurisci nella preparazione di domani
+ trascurando la giornata di oggi?
+
+L'oggi ti appartiene. Ti è stato dato. Accettalo come un'offerta della vita, e
+ fa' di questo giorno qualcosa di bello. Domani - se un domani ti sarà dato
+ - farai la stessa cosa. E dopodomani lo stesso; e così di seguito, un giorno
+ dopo l'altro, sino alla fine.
+
+Essere pronta, vuol dire accettare la vita; tutta la vita; come viene a noi;
+ con quel che ha di più bello e quel che ha di più triste; con i suoi giorni
+ leggeri che passano come farfalle, e i suoi giorni gravosi che si trascinano
+ come la nebbia sui campi bagnati.
+
+Essere pronta, vuol dire essere disposta a fare quello che l'ora richiede;
+ vuol dire accettare con buona volontà. Non è dalle tue parole che vedrò
+ che sei pronta; non è dalle tue azioni: è dal tuo atteggiamento di fronte
+ alla vita; forse dal tuo sguardo.
+ Accettare... È molto. Non è tutto.
+
+Per essere pronta, bisogna aver scelto. La vita è troppo ricca; ci sono
+ troppe cose che ci attraggono e ci richiamano. Le forze fisiche ed
+ intellettuali di un uomo non bastano per abbracciare tutto e compiere
+ tutto. In questa diversità bisogna scegliere.
+
+Quale sarà il verbo della tua vita? Quale sarà il tuo canto? Hai promesso
+ di servire. "Servire Dio, la famiglia, il prossimo", questa è stata la tua
+
+Promessa. $\hat{E}$ il servizio che hai messo al centro della tua vita. $\tilde{E}$ a lui che
+ ritornerai sempre, dopo essertene allontanata, o esserti lasciata andare e
+ averlo trascurato. Servire è il tuo verbo. L'hai voluto e lo vuoi ancora. Lo
+ sai bene che la tua vita non può essere che un'offerta fatta agli altri. Hai
+ scelto. Sei pronta.</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SEZIONE 5 -->
+            <article class="accordion-item" id="sec-partenza">
+                <button class="accordion-header" aria-expanded="false">
+                    <div class="header-content">
+                        <div class="section-icon">
+                            <!-- Icona Vangelo/Luce -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        </div>
+                        <h3 class="accordion-title">La Partenza</h3>
+                    </div>
+                    <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="accordion-collapse">
+                    <div class="accordion-body">
+                        <div class="accordion-content original-text">La Partenza
+
+Vangelo secondo Matteo 5:13-16
+
+&lt;&lt;&lt;Voi siete il sale della terra; ma, se il sale diventa insipido, con che lo si
+ salerà? Non è più buono a nulla se non a essere gettato via e calpestato
+ dagli uomini. Voi siete la luce del mondo. Una città posta sopra un monte
+ non può essere nascosta, e non si accende una lampada per metterla sotto
+ un recipiente; anzi la si mette sul candeliere ed essa fa luce a tutti quelli
+ che sono in casa. Così risplenda la vostra luce davanti agli uomini, affinché
+ vedano le vostre buone opere e glorifichino il Padre vostro che è nei cieli.
+
+IL SALE Simbolo del bene più indispensabile sulla terra.
+
+LA LANTERNA Simbolo della luce.
+
+IL PANE Simbolo dell'essenzialità e della condivisione. Il dono con il
+ quale Dio assicura la vita ai suoi figli. "Io sono il Pane disceso dal cielo,
+ chi mangerà di me non avrà più fame."
+
+IL LIEVITO Simbolo della fede. "Il regno dei cieli è simile al lievito che
+ una donna ha preso e impastato con tre misure di farina perché tutta si
+ fermenti."
+
+IL SEME Simbolo della Parola di Dio. "Il Regno dei Cieli è simile a un
+ granello di senape che un uomo raccolse e seminò nel suo campo. Esso è
+ in realtà il più piccolo fra tutti i semi; una volta cresciuto però è il più
+ grande degli ortaggi e diventa una pianta, di modo che tutti gli uccelli del
+ cielo vadano a posarsi tra i suoi rami."
+
+LA FORCOLA Simbolo della scelta. Dinanzi a te si pongono sempre una
+ via facile e una difficile, è tempo di scegliere.</div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- SEZIONE 6 -->
+            <article class="accordion-item" id="sec-lettera">
+                <button class="accordion-header" aria-expanded="false">
+                    <div class="header-content">
+                        <div class="section-icon">
+                            <!-- Icona Lettera/Cammino -->
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        </div>
+                        <h3 class="accordion-title">"Lettera per una promessa"</h3>
+                    </div>
+                    <svg class="toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <div class="accordion-collapse">
+                    <div class="accordion-body">
+                        <div class="accordion-content original-text">"Lettera per una promessa"
+
+mentre si allontana
+
+La Strada
+
+Di tutti i poeti e i pazzi
+
+che abbiamo incontrato per
+ strada
+
+ho tenuto una faccia o un nome
+ una lacrima o qualche risata
+ abbiamo bevuto a Galway
+ fatto tardi nei bar di Lisbona
+ riscoperto le storie d'Italia
+
+sulle note di qualche canzone.
+
+Abbiamo girato insieme
+ e ascoltato le voci dei matti
+ incontrato la gente più strana
+ e imbarcato compagni di viaggio
+ qualcuno è rimasto
+
+qualcuno è andato e non s'è più
+ sentito
+
+un giorno anche tu hai deciso
+ un abbraccio e poi sei partito.
+
+Buon viaggio hermano querido
+ e buon cammino ovunque tu vada
+
+forse un giorno potremo
+ incontrarci
+
+di nuovo lungo la strada.
+
+Di tutti i paesi e le piazze
+
+dove abbiamo fermato il furgone
+ abbiamo perso un minuto ad
+ ascoltare
+
+un partigiano o qualche ubriacone
+ le strane storie dei vecchi al bar
+ e dei bambini col tè del deserto
+ sono state lezioni di vita
+
+che ho imparato e ancora
+ conservO.
+
+Buon viaggio...
+
+Non sto piangendo sui tempi
+ andati
+
+o sul passato e le solite storie
+ perché è stupido fare casino
+ su un ricordo o su qualche
+ canzone
+
+non voltarti ti prego
+ nessun rimpianto per quello che è
+ stato
+
+che le stelle ti guidino sempre
+ e la strada ti porti lontano
+
+Buon viaggio...</div>
+                    </div>
+                </div>
+            </article>
+
+        </div>
+    </main>
+
+    <!-- Footer Discreto -->
+    <footer>
+        <p>Buona Strada.</p>
+        <!-- Simbolo del giglio stilizzato -->
+        <svg class="scout-symbol-footer" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L15 8L22 9L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9L9 8L12 2Z"></path></svg>
+    </footer>
+
+    <!-- Indice Flottante (Mobile Menu) -->
+    <button class="fab-index" id="fab-btn" aria-label="Apri Indice">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+    </button>
+
+    <nav class="index-menu" id="index-menu">
+        <ul>
+            <li><a href="#inizio" class="index-link">Inizio</a></li>
+            <li><a href="#sec-route" class="index-link" data-target="sec-route">E' di nuovo route</a></li>
+            <li><a href="#sec-accetto" class="index-link" data-target="sec-accetto">Quello che Tu mi dai...</a></li>
+            <li><a href="#sec-benedizione" class="index-link" data-target="sec-benedizione">Benedizione Irlandese</a></li>
+            <li><a href="#sec-pronta" class="index-link" data-target="sec-pronta">Sii pronta</a></li>
+            <li><a href="#sec-partenza" class="index-link" data-target="sec-partenza">La Partenza</a></li>
+            <li><a href="#sec-lettera" class="index-link" data-target="sec-lettera">Lettera per una promessa</a></li>
+        </ul>
+    </nav>
+
+    <!-- Script Javascript per interazioni, scroll e animazioni -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. GESTIONE ACCORDION
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    const item = header.parentElement;
+                    const isActive = item.classList.contains('active');
+                    
+                    // Chiudi tutti gli altri (opzionale, de-commenta se vuoi che se ne apra uno solo alla volta)
+                    // document.querySelectorAll('.accordion-item').forEach(i => {
+                    //    i.classList.remove('active');
+                    //    i.querySelector('.accordion-header').setAttribute('aria-expanded', 'false');
+                    // });
+
+                    // Toggle corrente
+                    if (!isActive) {
+                        item.classList.add('active');
+                        header.setAttribute('aria-expanded', 'true');
+                    } else {
+                        item.classList.remove('active');
+                        header.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            });
+
+            // 2. APRI/CHIUDI TUTTO
+            const btnExpandAll = document.getElementById('btn-expand-all');
+            const btnCollapseAll = document.getElementById('btn-collapse-all');
+            const allItems = document.querySelectorAll('.accordion-item');
+
+            btnExpandAll.addEventListener('click', () => {
+                allItems.forEach(item => {
+                    item.classList.add('active');
+                    item.querySelector('.accordion-header').setAttribute('aria-expanded', 'true');
+                });
+            });
+
+            btnCollapseAll.addEventListener('click', () => {
+                allItems.forEach(item => {
+                    item.classList.remove('active');
+                    item.querySelector('.accordion-header').setAttribute('aria-expanded', 'false');
+                });
+            });
+
+            // 3. MENU INDICE FLOTTANTE (FAB)
+            const fabBtn = document.getElementById('fab-btn');
+            const indexMenu = document.getElementById('index-menu');
+            const indexLinks = document.querySelectorAll('.index-link');
+
+            // Toggle menu
+            fabBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                indexMenu.classList.toggle('show');
+            });
+
+            // Chiudi menu cliccando fuori
+            document.addEventListener('click', (e) => {
+                if (!indexMenu.contains(e.target) && !fabBtn.contains(e.target)) {
+                    indexMenu.classList.remove('show');
+                }
+            });
+
+            // Navigazione rapida
+            indexLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    indexMenu.classList.remove('show');
+                    const targetId = link.getAttribute('data-target');
+                    
+                    if(targetId) {
+                        e.preventDefault();
+                        const targetItem = document.getElementById(targetId);
+                        
+                        // Assicurati che l'accordion di destinazione sia aperto
+                        targetItem.classList.add('active');
+                        targetItem.querySelector('.accordion-header').setAttribute('aria-expanded', 'true');
+                        
+                        // Scrolla verso l'elemento con un piccolo offset
+                        setTimeout(() => {
+                            const y = targetItem.getBoundingClientRect().top + window.scrollY - 80;
+                            window.scrollTo({ top: y, behavior: 'smooth' });
+                        }, 100);
+                    }
+                });
+            });
+
+            // 4. SCROLL PROGRESS BAR
+            const progressBar = document.getElementById('scroll-progress');
+            
+            window.addEventListener('scroll', () => {
+                const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                progressBar.style.width = scrolled + "%";
+            });
+
+            // (Opzionale) Apri la prima sezione di default
+            if(allItems.length > 0) {
+                allItems[0].classList.add('active');
+                allItems[0].querySelector('.accordion-header').setAttribute('aria-expanded', 'true');
+            }
+        });
+    </script>
+</body>
+</html>
