@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noi: Un Percorso sulla Comunità</title>
+    <!-- Font Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fdfbf7;
+            --text-color: #2c3e50;
+            --accent-color: #8e44ad;
+            --secondary-accent: #d35400;
+            --soft-gray: #7f8c8d;
+            --card-bg: #ffffff;
+            --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Progress Bar */
+        #progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(0,0,0,0.05);
+            z-index: 1000;
+        }
+
+        #progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-color), var(--secondary-accent));
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+
+        /* Typography */
+        h1, h2, .quote {
+            font-family: 'Crimson Pro', serif;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Sections */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 80px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: var(--transition);
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            background: linear-gradient(rgba(253, 251, 247, 0.8), rgba(253, 251, 247, 0.8)), 
+                        url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&q=80&w=1600') no-repeat center;
+            background-size: cover;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: var(--text-color);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--soft-gray);
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .scroll-hint {
+            font-style: italic;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            animation: bounce 2s infinite;
+        }
+
+        /* Transitions Phrases */
+        .transition-phrase {
+            text-align: center;
+            font-style: italic;
+            color: var(--secondary-accent);
+            padding: 40px 0;
+            font-size: 1.1rem;
+            opacity: 0.7;
+        }
+
+        /* Donne Section */
+        .donne-poem {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            margin: 20px 0;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .donne-poem p {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.3rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        /* Image handling */
+        .img-container {
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .img-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Reflection Cards */
+        .reflection-group {
+            margin-top: 40px;
+        }
+
+        .reflection-card {
+            background: var(--card-bg);
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reflection-card:hover {
+            border-color: var(--accent-color);
+            background: #fcfaff;
+        }
+
+        .reflection-card h4 {
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reflection-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+            font-size: 1.05rem;
+            color: var(--text-color);
+        }
+
+        .reflection-card.open .reflection-content {
+            max-height: 200px;
+            padding-top: 10px;
+        }
+
+        /* Buttons */
+        .btn-youtube {
+            display: inline-flex;
+            align-items: center;
+            background-color: #e74c3c;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin: 20px 0;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-youtube:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-youtube svg {
+            margin-right: 10px;
+        }
+
+        /* Summary Section */
+        .summary {
+            background: var(--text-color);
+            color: white;
+            text-align: center;
+            border-radius: 20px;
+            padding: 60px 30px;
+            margin-bottom: 80px;
+        }
+
+        .summary h2 { color: white; margin-bottom: 20px; }
+        .summary p { opacity: 0.9; margin-bottom: 30px; }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2.2rem; }
+            section { padding: 60px 0; }
+            .donne-poem { padding: 25px; }
+            .donne-poem p { font-size: 1.15rem; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-10px);}
+            60% {transform: translateY(-5px);}
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+
+    <div class="container">
+        
+        <!-- INTRODUZIONE -->
+        <section class="hero visible" id="intro">
+            <p class="scroll-hint">Inizia il tuo viaggio</p>
+            <h1>Noi: Il Battito della Comunità</h1>
+            <p>Un percorso riflessivo dall'interdipendenza umana alla consapevolezza del nostro ruolo nella storia collettiva.</p>
+            <p style="font-style: italic; font-size: 1rem;">"Siamo onde dello stesso mare, foglie dello stesso albero, fiori dello stesso giardino."</p>
+        </section>
+
+        <div class="transition-phrase">Dall'isolamento all'unione...</div>
+
+        <!-- JOHN DONNE -->
+        <section id="donne">
+            <h2>Nessun uomo è un'isola</h2>
+            <div class="donne-poem">
+                <p>«Nessun uomo è un'isola, intero in se stesso; ogni uomo è un pezzo del continente, una parte del tutto...</p>
+                <p>La morte di qualsiasi uomo mi sminuisce, perché io sono parte dell'umanità. E dunque non mandare mai a chiedere per chi suona la campana: essa suona per te.»</p>
+            </div>
+            <p>John Donne ci ricorda che la nostra esistenza non è un atto solitario. Ogni nostra azione, ogni perdita e ogni gioia vibrano attraverso il tessuto dell'umanità. Se una zolla viene portata via dal mare, l'Europa ne è diminuita: così è per ogni individuo.</p>
+            
+            <div class="reflection-group">
+                <div class="reflection-card" onclick="toggleCard(this)">
+                    <h4><span>Riflessione 1: Il legame invisibile</span> <span>+</span></h4>
+                    <div class="reflection-content">In quali momenti della tua giornata ti senti davvero parte di qualcosa di più grande di te stesso?</div>
+                </div>
+                <div class="reflection-card" onclick="toggleCard(this)">
+                    <h4><span>Riflessione 2: La risonanza</span> <span>+</span></h4>
+                    <div class="reflection-content">Come reagisci quando vedi un cambiamento o una difficoltà che colpisce qualcuno che non conosci direttamente? Senti che "la campana suona anche per te"?</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="transition-phrase">Dalla consapevolezza all'azione...</div>
+
+        <!-- HEMINGWAY -->
+        <section id="hemingway">
+            <h2>Per chi suona la campana</h2>
+            <div class="img-container">
+                <img src="https://www.liceogullace.edu.it/biblioteca/wp-content/uploads/2020/05/E.Hemingway-Per-chi-suona-la-campana.Mondadori.jpg" alt="Copertina di Per chi suona la campana di Ernest Hemingway">
+            </div>
+            <p><strong>La trama:</strong> Nel cuore della Guerra Civile Spagnola, l'americano Robert Jordan riceve l'ordine di far saltare un ponte. Non è la sua guerra, ma diventa la sua missione. Tra le montagne, Robert scopre l'amore, il cameratismo e il peso immenso del sacrificio.</p>
+            <p style="margin-top: 15px;"><strong>Il tema:</strong> Hemingway trasforma la poesia di Donne in narrazione epica. Qui l'interdipendenza diventa <strong>responsabilità</strong>. Robert Jordan non combatte solo per un'ideologia, ma per le persone che ha imparato ad amare e per un senso di dovere verso la collettività che supera la paura della morte.</p>
+            
+            <div class="reflection-group">
+                <div class="reflection-card" onclick="toggleCard(this)">
+                    <h4><span>Riflessione 1: Il sacrificio</span> <span>+</span></h4>
+                    <div class="reflection-content">C'è qualcosa o qualcuno per cui saresti disposto a mettere da parte il tuo interesse personale oggi?</div>
+                </div>
+                <div class="reflection-card" onclick="toggleCard(this)">
+                    <h4><span>Riflessione 2: Prendere posizione</span> <span>+</span></h4>
+                    <div class="reflection-content">In una comunità, il silenzio è spesso una scelta. Quando senti che è il momento di "agire sul ponte" per il bene comune?</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="transition-phrase">Dalla responsabilità alla necessità...</div>
+
+        <!-- LOST -->
+        <section id="lost">
+            <h2>Lost: Sopravvivenza e Comunità</h2>
+            <p class="quote" style="font-size: 1.5rem; text-align: center; margin: 20px 0; color: var(--accent-color);">
+                "Se non impariamo a vivere insieme, moriremo da soli."
+            </p>
+            <p>Sull'isola di Lost, un gruppo di sconosciuti deve superare i propri traumi e pregiudizi. La comunità non nasce da un'affinità elettiva, ma da una necessità brutale: la sopravvivenza. Senza l'altro, l'isola vince.</p>
+            
+            <div style="text-align: center;">
+                <a href="https://www.youtube.com/watch?v=Anj0fCDjCos" target="_blank" class="btn-youtube">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                    Guarda il discorso di Jack
+                </a>
+            </div>
+
+            <p style="font-size: 0.9rem; color: var(--soft-gray); text-align: center;">La scena mostra il momento in cui i superstiti realizzano che l'egoismo è il loro peggior nemico.</p>
+
+            <div class="reflection-group">
+                <div class="reflection-card" onclick="toggleCard(this)">
+                    <h4><span>Riflessione 1: Fiducia forzata</span> <span>+</span></h4>
+                    <div class="reflection-content">Ti è mai capitato di dover collaborare con qualcuno che non ti piaceva per un obiettivo comune? Cosa hai imparato?</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="transition-phrase">Dalla collaborazione alla crisi dell'io...</div>
+
+        <!-- EVANGELION -->
+        <section id="evangelion">
+            <h2>Neon Genesis Evangelion</h2>
+            <p><strong>L'Identità e l'Altro:</strong> In Evangelion, il "Progetto per il Perfezionamento dell'Uomo" mira a eliminare il dolore della solitudine fondendo tutte le anime in una. Ma senza i confini dell'io (l'AT-Field), l'individuo scompare. Il dilemma è atroce: accettare il dolore della relazione o annullarsi nella fusione?</p>
+            
+            <div style="text-align: center;">
+                <a href="https://youtu.be/DLStyztjCxI?is=VVHjidHPFSxDq-n-" target="_blank" class="btn-youtube" style="background-color: #2c3e50;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                    Il Dilemma dell'Istrice
+                </a>
+            </div>
+
+            <div class="reflection-group">
+                <div class="reflection-card" onclick="toggleCard(this)">
+                    <h4><span>Riflessione 1: I confini</span> <span>+</span></h4>
+                    <div class="reflection-content">Quanto di te stesso sei disposto a sacrificare per sentirti accettato da un gruppo?</div>
+                </div>
+                <div class="reflection-card" onclick="toggleCard(this)">
+                    <h4><span>Riflessione 2: La ferita della relazione</span> <span>+</span></h4>
+                    <div class="reflection-content">Accetti il rischio di essere ferito pur di non vivere in un isolamento perfetto ma sterile?</div>
+                </div>
+            </div>
+        </section>
+
+        <div class="transition-phrase">Dalla crisi alla vita quotidiana...</div>
+
+        <!-- DE GREGORI -->
+        <section id="degregori">
+            <h2>La Storia siamo noi</h2>
+            <p>Chiudiamo il cerchio con la concretezza del quotidiano. Francesco De Gregori ci ricorda che la storia non è solo quella dei libri di scuola, fatta di generali e re. La storia è fatta da chi "si sporca le mani", da chi contribuisce nel silenzio delle proprie giornate.</p>
+            
+            <div style="text-align: center;">
+                <a href="https://www.youtube.com/watch?v=Hjz_i-e6vB4" target="_blank" class="btn-youtube" style="background-color: #d35400;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                    Ascolta "La Storia"
+                </a>
+            </div>
+
+            <p>Ognuno di noi è un filo invisibile ma indispensabile. Non c'è atto, per quanto piccolo, che non contribuisca a tessere la trama della comunità umana.</p>
+
+            <div class="reflection-group">
+                <div class="reflection-card" onclick="toggleCard(this)">
+                    <h4><span>Riflessione 1: Il tuo contributo</span> <span>+</span></h4>
+                    <div class="reflection-content">Qual è quel piccolo gesto quotidiano che fai e che, senza che tu lo noti, rende la tua comunità un posto migliore?</div>
+                </div>
+                <div class="reflection-card" onclick="toggleCard(this)">
+                    <h4><span>Riflessione 2: Il bisogno dell'altro</span> <span>+</span></h4>
+                    <div class="reflection-content">Cosa chiedi, oggi, alla tua comunità? Di cosa hai veramente bisogno per non sentirti un'isola?</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CONCLUSIONE -->
+        <section id="conclusion" class="summary">
+            <h2>Siamo parte dello stesso viaggio</h2>
+            <p>Abbiamo attraversato la poesia di Donne, il sacrificio di Hemingway, la necessità di Lost, la crisi d'identità di Evangelion e la storia quotidiana di De Gregori.</p>
+            <p style="font-size: 1.3rem; font-family: 'Crimson Pro', serif; font-style: italic;">"Alla fine del percorso, la domanda resta a te: chi vuoi essere per gli altri?"</p>
+        </section>
+
+    </div>
+
+    <script>
+        // Progress Bar Logic
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.width = scrolled + "%";
+            
+            // Reveal sections
+            revealSections();
+        };
+
+        // Section Reveal with Intersection Observer
+        const observerOptions = {
+            threshold: 0.15
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Toggle Reflection Cards
+        function toggleCard(card) {
+            const allCards = document.querySelectorAll('.reflection-card');
+            const isOpen = card.classList.contains('open');
+            
+            // Close other cards for focus
+            allCards.forEach(c => {
+                c.classList.remove('open');
+                const span = c.querySelector('span:last-child');
+                if (span) span.innerText = '+';
+            });
+
+            if (!isOpen) {
+                card.classList.add('open');
+                const span = card.querySelector('span:last-child');
+                if (span) span.innerText = '−';
+            }
+        }
+
+        // Initial check for visible sections
+        function revealSections() {
+            // Already handled by Intersection Observer
+        }
+    </script>
+</body>
+</html>
+
