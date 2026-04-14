@@ -1,0 +1,297 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionario di Profilazione Scout</title>
+    <!-- Tailwind CSS per uno stile moderno e responsive -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons per icone pulite -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .progress-bar { transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        .radar-label { font-size: 10px; font-weight: 700; fill: #64748b; }
+        
+        .option-btn {
+            transition: all 0.2s ease;
+        }
+        .option-btn:active { transform: scale(0.98); }
+    </style>
+</head>
+<body class="text-slate-900 overflow-x-hidden">
+
+    <div id="app" class="max-w-xl mx-auto px-5 py-8 md:py-12">
+        <!-- L'intero contenuto viene generato dinamicamente da JavaScript -->
+    </div>
+
+    <script>
+        // --- CONFIGURAZIONE DATI ---
+        const QUESTIONS = [
+            { id: 0, text: "Quando devi comunicare un’informazione ai genitori, come ti comporti?", options: [{ id: 'A', text: "Preparo un messaggio chiaro con tutte le informazioni necessarie" }, { id: 'B', text: "Scrivo in modo informale, cercando anche un contatto personale" }, { id: 'C', text: "Colgo l’occasione per capire come stanno e se ci sono difficoltà" }, { id: 'D', text: "Vado dritto al punto, sottolineando ciò che è importante rispettare" }] },
+            { id: 1, text: "Un genitore ti chiede un confronto su una difficoltà del figlio. Tu:", options: [{ id: 'A', text: "Ascolto ma riporto il tutto su aspetti concreti e gestionali" }, { id: 'B', text: "Mi metto a disposizione per parlarne con calma e continuità" }, { id: 'C', text: "Dedico tempo ad ascoltare e approfondire la situazione" }, { id: 'D', text: "Evidenzio subito eventuali responsabilità o aspetti critici" }] },
+            { id: 2, text: "Durante una riunione con i genitori:", options: [{ id: 'A', text: "Seguo una scaletta precisa e organizzata" }, { id: 'B', text: "Cerco di creare un clima accogliente e informale" }, { id: 'C', text: "Lascio spazio all’ascolto e agli interventi personali" }, { id: 'D', text: "Porto l’attenzione su ciò che può essere migliorato" }] },
+            { id: 3, text: "Se un genitore non rispetta una regola del gruppo:", options: [{ id: 'A', text: "Ricordo la regola in modo formale" }, { id: 'B', text: "Ne parlo in modo tranquillo e personale" }, { id: 'C', text: "Cerco di capire il motivo dietro il comportamento" }, { id: 'D', text: "Faccio notare chiaramente l’errore e le conseguenze" }] },
+            { id: 4, text: "Il tuo rapporto con i genitori è:", options: [{ id: 'A', text: "Basato su comunicazioni chiare e definite" }, { id: 'B', text: "Molto diretto e amichevole" }, { id: 'C', text: "Di ascolto e fiducia reciproca" }, { id: 'D', text: "Esigente e orientato alla coerenza" }] },
+            { id: 5, text: "Quando organizzi un’attività:", options: [{ id: 'A', text: "Comunico tutto nel dettaglio con precisione" }, { id: 'B', text: "Coinvolgo i genitori anche nel clima e nell’entusiasmo" }, { id: 'C', text: "Mi rendo disponibile a raccogliere dubbi o esigenze" }, { id: 'D', text: "Sottolineo ciò che deve essere fatto correttamente" }] },
+            { id: 6, text: "Se un genitore ti contatta spesso:", options: [{ id: 'A', text: "Rispondo in modo sintetico e funzionale" }, { id: 'B', text: "Rispondo volentieri, anche andando oltre il necessario" }, { id: 'C', text: "Mi prendo tempo per ascoltare davvero" }, { id: 'D', text: "Cerco di riportare il confronto su ciò che conta davvero" }] },
+            { id: 7, text: "Quando emergono problemi educativi:", options: [{ id: 'A', text: "Mi attengo al ruolo e alle regole del gruppo" }, { id: 'B', text: "Cerco il dialogo diretto e personale" }, { id: 'C', text: "Offro uno spazio di ascolto e confronto" }, { id: 'D', text: "Evidenzio ciò che non funziona" }] },
+            { id: 8, text: "Il tuo stile di comunicazione è:", options: [{ id: 'A', text: "Ordinato, preciso, strutturato" }, { id: 'B', text: "Informale, caldo, vicino" }, { id: 'C', text: "Empatico, accogliente, disponibile" }, { id: 'D', text: "Diretto, chiaro, a volte incisivo" }] },
+            { id: 9, text: "I genitori si rivolgono a te perché:", options: [{ id: 'A', text: "Sanno che trovano informazioni chiare" }, { id: 'B', text: "Si sentono a proprio agio con te" }, { id: 'C', text: "Si sentono ascoltati nelle difficoltà" }, { id: 'D', text: "Sanno che dici le cose come stanno" }] },
+            { id: 10, text: "In caso di incomprensioni:", options: [{ id: 'A', text: "Richiamo a ciò che era stato comunicato" }, { id: 'B', text: "Cerco un confronto sereno" }, { id: 'C', text: "Ascolto a fondo le ragioni dell’altro" }, { id: 'D', text: "Metto in evidenza ciò che non è andato" }] },
+            { id: 11, text: "Il tuo obiettivo principale con i genitori è:", options: [{ id: 'A', text: "Garantire chiarezza e organizzazione" }, { id: 'B', text: "Costruire un rapporto positivo e vicino" }, { id: 'C', text: "Offrire ascolto e supporto" }, { id: 'D', text: "Mantenere coerenza educativa" }] }
+        ];
+
+        const PROFILES = {
+            A: { title: "Il burocrate", emoji: "📋", color: "blue", desc: "Gestisci la relazione con i genitori in modo formale, strutturato e regolato. La tua comunicazione è chiara, precisa e legata ad aspetti organizzativi. Mantieni distanza per evitare ambiguità.", strength: "Chiarezza e ordine.", risk: "Risultare freddo o poco coinvolgente." },
+            B: { title: "L’amico di famiglia", emoji: "🤝", color: "orange", desc: "Costruisci con i genitori un rapporto molto vicino, informale e confidenziale. Sei facilmente accessibile e disponibile al dialogo spontaneo.", strength: "Relazione forte e positiva.", risk: "Difficoltà nel gestire i confini educativi." },
+            C: { title: "Il confessore", emoji: "❤️", color: "rose", desc: "Sei un punto di riferimento nei momenti di difficoltà. Ascolti molto e accogli preoccupazioni, dubbi e fatiche dei genitori.", strength: "Ascolto e supporto autentico.", risk: "Caricarsi eccessivamente delle dinamiche familiari." },
+            D: { title: "Il super critico", emoji: "🎯", color: "amber", desc: "Hai uno sguardo esigente e orientato al miglioramento. Non esiti a segnalare scelte educative poco coerenti con il percorso scout.", strength: "Chiarezza e coerenza educativa.", risk: "Essere percepito come giudicante." }
+        };
+
+        // --- STATO DELL'APP ---
+        let state = {
+            step: 'home', // home, quiz, results
+            currentIdx: 0,
+            answers: {},
+        };
+
+        const app = document.getElementById('app');
+
+        // --- LOGICA DI NAVIGAZIONE ---
+        function setState(newState) {
+            state = { ...state, ...newState };
+            render();
+            lucide.createIcons(); // Inizializza icone Lucide dopo ogni render
+        }
+
+        function handleAnswer(optionId) {
+            state.answers[state.currentIdx] = optionId;
+            if (state.currentIdx < QUESTIONS.length - 1) {
+                setTimeout(() => {
+                    setState({ currentIdx: state.currentIdx + 1 });
+                }, 300);
+            } else {
+                render(); // Aggiorna per mostrare il pulsante "Vedi Risultati"
+            }
+        }
+
+        // --- FUNZIONI DI CALCOLO ---
+        function getResults() {
+            const counts = { A: 0, B: 0, C: 0, D: 0 };
+            Object.values(state.answers).forEach(a => counts[a]++);
+            const max = Math.max(...Object.values(counts));
+            const tops = Object.keys(counts).filter(k => counts[k] === max);
+            return { counts, tops, max };
+        }
+
+        // --- GENERAZIONE SVG RADAR ---
+        function generateRadarChart(counts) {
+            const size = 280;
+            const center = size / 2;
+            const radius = size * 0.35;
+            const labels = ["Burocrate", "Amico", "Confessore", "Critico"];
+            const keys = ['A', 'B', 'C', 'D'];
+            const angles = [270, 0, 90, 180]; // Top, Right, Bottom, Left
+
+            const getCoords = (val, angle, rOffset = radius) => {
+                const r = (val / 12) * rOffset;
+                const rad = (angle * Math.PI) / 180;
+                return {
+                    x: center + r * Math.cos(rad),
+                    y: center + r * Math.sin(rad)
+                };
+            };
+
+            const points = keys.map((k, i) => getCoords(counts[k], angles[i]));
+            const polygon = points.map(p => `${p.x},${p.y}`).join(' ');
+
+            let svg = `<svg viewBox="0 0 ${size} ${size}" class="w-full h-auto max-w-[300px] mx-auto overflow-visible">`;
+            
+            // Griglia
+            [0.25, 0.5, 0.75, 1].forEach(tick => {
+                const pGrid = angles.map(a => {
+                    const c = getCoords(12 * tick, a);
+                    return `${c.x},${c.y}`;
+                }).join(' ');
+                svg += `<polygon points="${pGrid}" fill="none" stroke="#e2e8f0" stroke-width="1" />`;
+            });
+
+            // Assi
+            angles.forEach(a => {
+                const p = getCoords(12, a);
+                svg += `<line x1="${center}" y1="${center}" x2="${p.x}" y2="${p.y}" stroke="#e2e8f0" stroke-width="1" />`;
+            });
+
+            // Dati
+            svg += `<polygon points="${polygon}" fill="rgba(16, 185, 129, 0.15)" stroke="#10b981" stroke-width="3" stroke-linejoin="round" />`;
+            
+            // Etichette
+            labels.forEach((l, i) => {
+                const p = getCoords(12, angles[i], radius + 30);
+                svg += `<text x="${p.x}" y="${p.y}" text-anchor="middle" class="radar-label">${l.toUpperCase()}</text>`;
+            });
+
+            svg += `</svg>`;
+            return svg;
+        }
+
+        // --- TEMPLATES ---
+        function render() {
+            if (state.step === 'home') {
+                app.innerHTML = `
+                    <div class="fade-in">
+                        <header class="text-center mb-10">
+                            <span class="inline-block bg-emerald-50 text-emerald-600 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest border border-emerald-100 mb-4">⚜️ Scout Tool</span>
+                            <h1 class="text-3xl font-black text-slate-800">Profilazione Relazionale</h1>
+                        </header>
+                        <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100 text-center">
+                            <div class="text-6xl mb-6">⛺</div>
+                            <h2 class="text-xl font-bold mb-4">Capi Scout e Genitori</h2>
+                            <p class="text-slate-500 mb-8 text-sm leading-relaxed">
+                                Questo questionario offre uno spunto di riflessione sul proprio stile di relazione con i genitori. 
+                                Non ha valore scientifico, ma aiuta a riconoscere le proprie tendenze comunicative.
+                            </p>
+                            <button onclick="setState({step:'quiz'})" class="w-full bg-emerald-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-emerald-200 flex items-center justify-center gap-2 hover:bg-emerald-700 transition-all active:scale-95">
+                                Inizia il test <i data-lucide="chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } else if (state.step === 'quiz') {
+                const q = QUESTIONS[state.currentIdx];
+                const progress = ((state.currentIdx + 1) / QUESTIONS.length) * 100;
+                const isComplete = Object.keys(state.answers).length === QUESTIONS.length;
+
+                app.innerHTML = `
+                    <div class="fade-in">
+                        <div class="mb-8">
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Domanda ${state.currentIdx + 1}/${QUESTIONS.length}</span>
+                                <span class="text-xs font-bold text-emerald-600">${Math.round(progress)}%</span>
+                            </div>
+                            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                                <div class="progress-bar h-full bg-emerald-500" style="width: ${progress}%"></div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-[2.5rem] p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
+                            <h3 class="text-lg md:text-xl font-bold text-slate-800 mb-8 leading-snug">${q.text}</h3>
+                            <div class="space-y-3">
+                                ${q.options.map(opt => `
+                                    <button onclick="handleAnswer('${opt.id}')" class="option-btn w-full text-left p-4 rounded-2xl border-2 flex gap-4 items-start ${state.answers[state.currentIdx] === opt.id ? 'border-emerald-500 bg-emerald-50/50 ring-1 ring-emerald-500' : 'border-slate-50 bg-slate-50/30 hover:border-emerald-200'}">
+                                        <div class="mt-0.5 w-6 h-6 rounded-lg flex-shrink-0 flex items-center justify-center text-xs font-black ${state.answers[state.currentIdx] === opt.id ? 'bg-emerald-500 text-white' : 'bg-white text-slate-400 border border-slate-200'}">${opt.id}</div>
+                                        <span class="text-sm font-medium leading-tight ${state.answers[state.currentIdx] === opt.id ? 'text-emerald-900' : 'text-slate-600'}">${opt.text}</span>
+                                    </button>
+                                `).join('')}
+                            </div>
+
+                            <div class="mt-10 pt-6 border-t border-slate-50 flex gap-3">
+                                <button onclick="setState({currentIdx: Math.max(0, state.currentIdx-1)})" class="flex-1 py-3 px-4 rounded-xl border-2 border-slate-100 text-slate-400 font-bold text-sm flex items-center justify-center gap-2 hover:bg-slate-50" ${state.currentIdx === 0 ? 'disabled' : ''}>
+                                    <i data-lucide="chevron-left" class="w-4 h-4"></i> Indietro
+                                </button>
+                                ${state.currentIdx === QUESTIONS.length - 1 ? 
+                                    `<button onclick="setState({step:'results'})" class="flex-[1.5] py-3 px-4 rounded-xl bg-emerald-600 text-white font-bold text-sm shadow-lg shadow-emerald-200" ${!state.answers[state.currentIdx] ? 'disabled' : ''}>Vedi Risultati</button>` :
+                                    `<button onclick="setState({currentIdx: Math.min(QUESTIONS.length-1, state.currentIdx+1)})" class="flex-1 py-3 px-4 rounded-xl border-2 border-emerald-100 text-emerald-600 font-bold text-sm flex items-center justify-center gap-2" ${!state.answers[state.currentIdx] ? 'disabled' : ''}>Avanti <i data-lucide="chevron-right" class="w-4 h-4"></i></button>`
+                                }
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (state.step === 'results') {
+                const res = getResults();
+                let resultHTML = '';
+
+                if (res.tops.length > 2) {
+                    resultHTML = `
+                        <div class="text-6xl mb-4">🎭</div>
+                        <h3 class="text-2xl font-black text-indigo-800 mb-2">Profilo Multiforme</h3>
+                        <p class="text-slate-500 text-sm leading-relaxed px-4">Mostri uno stile estremamente equilibrato. Adatti la tua comunicazione in base alla situazione senza una tendenza fissa.</p>
+                    `;
+                } else if (res.tops.length === 2) {
+                    resultHTML = `
+                        <div class="text-6xl mb-4">⚖️</div>
+                        <h3 class="text-2xl font-black text-emerald-800 mb-4">Stile Ibrido</h3>
+                        <div class="flex gap-2 justify-center mb-6">
+                            ${res.tops.map(t => `<div class="bg-${PROFILES[t].color}-50 text-${PROFILES[t].color}-700 px-3 py-1 rounded-lg text-xs font-bold border border-${PROFILES[t].color}-100">${PROFILES[t].emoji} ${PROFILES[t].title}</div>`).join('')}
+                        </div>
+                        <p class="text-slate-500 text-sm italic px-4">Evidenzi una forte compresenza di due approcci distinti.</p>
+                    `;
+                } else {
+                    const p = PROFILES[res.tops[0]];
+                    resultHTML = `
+                        <div class="text-7xl mb-4">${p.emoji}</div>
+                        <h3 class="text-3xl font-black text-slate-800 mb-4">${p.title}</h3>
+                        <p class="text-slate-600 text-sm md:text-base leading-relaxed mb-8 text-left">${p.desc}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
+                            <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                                <span class="text-[10px] font-black text-emerald-600 uppercase tracking-widest block mb-1">Forza</span>
+                                <p class="text-emerald-900 text-xs font-bold">${p.strength}</p>
+                            </div>
+                            <div class="bg-rose-50 p-4 rounded-2xl border border-rose-100">
+                                <span class="text-[10px] font-black text-rose-600 uppercase tracking-widest block mb-1">Rischio</span>
+                                <p class="text-rose-900 text-xs font-bold">${p.risk}</p>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                app.innerHTML = `
+                    <div class="fade-in space-y-6">
+                        <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100 text-center relative overflow-hidden">
+                            <div class="absolute top-0 left-0 w-full h-2 bg-emerald-500"></div>
+                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-6">Il tuo profilo prevalente</span>
+                            ${resultHTML}
+                        </div>
+
+                        <div class="bg-white rounded-[2.5rem] p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
+                            <h4 class="text-center text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">Analisi delle Tendenze</h4>
+                            ${generateRadarChart(res.counts)}
+                            <div class="grid grid-cols-2 gap-2 mt-8">
+                                ${Object.entries(PROFILES).map(([k, p]) => `
+                                    <div class="flex items-center gap-3 p-2 bg-slate-50 rounded-xl border border-slate-100">
+                                        <span class="text-xl">${p.emoji}</span>
+                                        <div>
+                                            <div class="text-[8px] font-black text-slate-400 uppercase leading-none mb-1">${p.title}</div>
+                                            <div class="text-xs font-bold text-slate-700">${res.counts[k]} pt</div>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="pt-4 space-y-6">
+                            <button onclick="setState({step:'home', currentIdx:0, answers:{}})" class="w-full bg-slate-100 text-slate-600 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 hover:bg-slate-200 transition-all">
+                                <i data-lucide="rotate-ccw" class="w-5 h-5"></i> Rifai il test
+                            </button>
+                            <p class="text-[10px] text-slate-400 text-center leading-relaxed italic px-8">
+                                Test riflessivo per capi scout. Ogni stile ha valore: l'equilibrio è la chiave dell'alleanza educativa.
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Inizializzazione
+        render();
+        lucide.createIcons();
+    </script>
+</body>
+</html>
+
