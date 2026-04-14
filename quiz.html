@@ -1,0 +1,421 @@
+```react
+import React, { useState, useMemo } from 'react';
+import { 
+  ClipboardCheck, 
+  Users, 
+  Heart, 
+  Target, 
+  ChevronRight, 
+  ChevronLeft, 
+  RotateCcw, 
+  Info,
+  CheckCircle2,
+  AlertCircle
+} from 'lucide-react';
+
+// --- CONFIGURAZIONE PROFILI ---
+
+const PROFILES = {
+  A: {
+    id: 'A',
+    title: "Il burocrate",
+    emoji: "📋",
+    icon: <ClipboardCheck className="w-6 h-6" />,
+    color: "bg-blue-100 text-blue-700 border-blue-200",
+    stroke: "#3b82f6",
+    fill: "rgba(59, 130, 246, 0.2)",
+    description: "Gestisci la relazione con i genitori in modo formale, strutturato e regolato. La tua comunicazione è chiara, precisa e spesso legata ad aspetti organizzativi: orari, attività, regole. Mantieni una certa distanza, evitando di entrare troppo in dinamiche personali o educative con le famiglie.",
+    strength: "Chiarezza e ordine, che riducono ambiguità e incomprensioni.",
+    risk: "Risultare freddo o poco coinvolgente, perdendo opportunità di alleanza educativa."
+  },
+  B: {
+    id: 'B',
+    title: "L’amico di famiglia",
+    emoji: "🤝",
+    icon: <Users className="w-6 h-6" />,
+    color: "bg-orange-100 text-orange-700 border-orange-200",
+    stroke: "#f97316",
+    fill: "rgba(249, 115, 22, 0.2)",
+    description: "Costruisci con i genitori un rapporto molto vicino, informale e confidenziale. Sei facilmente accessibile, disponibile al dialogo e tendi a creare un clima di familiarità e fiducia. I genitori si sentono accolti e ascoltati, anche su aspetti che vanno oltre lo scautismo.",
+    strength: "Relazione forte e positiva con le famiglie.",
+    risk: "Ridurre la distanza educativa necessaria e avere difficoltà nel gestire i confini."
+  },
+  C: {
+    id: 'C',
+    title: "Il confessore",
+    emoji: "❤️",
+    icon: <Heart className="w-6 h-6" />,
+    color: "bg-rose-100 text-rose-700 border-rose-200",
+    stroke: "#f43f5e",
+    fill: "rgba(244, 63, 94, 0.2)",
+    description: "Diventi un punto di riferimento per i genitori soprattutto nei momenti di difficoltà o bisogno. Ascolti molto, accogli preoccupazioni, dubbi e fatiche, offrendo uno spazio di confronto protetto. La relazione è spesso profonda e centrata sulla fiducia personale.",
+    strength: "Capacità di creare ascolto e supporto autentico.",
+    risk: "Caricarti eccessivamente delle dinamiche familiari o uscire dal tuo ruolo educativo."
+  },
+  D: {
+    id: 'D',
+    title: "Il super critico",
+    emoji: "🎯",
+    icon: <Target className="w-6 h-6" />,
+    color: "bg-amber-100 text-amber-700 border-amber-200",
+    stroke: "#f59e0b",
+    fill: "rgba(245, 158, 11, 0.2)",
+    description: "Hai uno sguardo attento, esigente e orientato al miglioramento nei confronti dei genitori. Non esiti a segnalare comportamenti o scelte educative poco coerenti con il percorso scout. La tua comunicazione è diretta e talvolta incisiva.",
+    strength: "Chiarezza e coerenza educativa.",
+    risk: "Essere percepito come giudicante o poco empatico, compromettendo la relazione."
+  }
+};
+
+// --- DATI DOMANDE ---
+
+const QUESTIONS = [
+  { id: 1, text: "Quando devi comunicare un’informazione ai genitori, come ti comporti?", options: [{ id: 'A', text: "Preparo un messaggio chiaro con tutte le informazioni necessarie" }, { id: 'B', text: "Scrivo in modo informale, cercando anche un contatto personale" }, { id: 'C', text: "Colgo l’occasione per capire come stanno e se ci sono difficoltà" }, { id: 'D', text: "Vado dritto al punto, sottolineando ciò che è importante rispettare" }] },
+  { id: 2, text: "Un genitore ti chiede un confronto su una difficoltà del figlio. Tu:", options: [{ id: 'A', text: "Ascolto ma riporto il tutto su aspetti concreti e gestionali" }, { id: 'B', text: "Mi metto a disposizione per parlarne con calma e continuità" }, { id: 'C', text: "Dedico tempo ad ascoltare e approfondire la situazione" }, { id: 'D', text: "Evidenzio subito eventuali responsabilità o aspetti critici" }] },
+  { id: 3, text: "Durante una riunione con i genitori:", options: [{ id: 'A', text: "Seguo una scaletta precisa e organizzata" }, { id: 'B', text: "Cerco di creare un clima accogliente e informale" }, { id: 'C', text: "Lascio spazio all’ascolto e agli interventi personali" }, { id: 'D', text: "Porto l’attenzione su ciò che può essere migliorato" }] },
+  { id: 4, text: "Se un genitore non rispetta una regola del gruppo:", options: [{ id: 'A', text: "Ricordo la regola in modo formale" }, { id: 'B', text: "Ne parlo in modo tranquillo e personale" }, { id: 'C', text: "Cerco di capire il motivo dietro il comportamento" }, { id: 'D', text: "Faccio notare chiaramente l’errore e le conseguenze" }] },
+  { id: 5, text: "Il tuo rapporto con i genitori è:", options: [{ id: 'A', text: "Basato su comunicazioni chiare e definite" }, { id: 'B', text: "Molto diretto e amichevole" }, { id: 'C', text: "Di ascolto e fiducia reciproca" }, { id: 'D', text: "Esigente e orientato alla coerenza" }] },
+  { id: 6, text: "Quando organizzi un’attività:", options: [{ id: 'A', text: "Comunico tutto nel dettaglio con precisione" }, { id: 'B', text: "Coinvolgo i genitori anche nel clima e nell’entusiasmo" }, { id: 'C', text: "Mi rendo disponibile a raccogliere dubbi o esigenze" }, { id: 'D', text: "Sottolineo ciò che deve essere fatto correttamente" }] },
+  { id: 7, text: "Se un genitore ti contatta spesso:", options: [{ id: 'A', text: "Rispondo in modo sintetico e funzionale" }, { id: 'B', text: "Rispondo volentieri, anche andando oltre il necessario" }, { id: 'C', text: "Mi prendo tempo per ascoltare davvero" }, { id: 'D', text: "Cerco di riportare il confronto su ciò che conta davvero" }] },
+  { id: 8, text: "Quando emergono problemi educativi:", options: [{ id: 'A', text: "Mi attengo al ruolo e alle regole del gruppo" }, { id: 'B', text: "Cerco il dialogo diretto e personale" }, { id: 'C', text: "Offro uno spazio di ascolto e confronto" }, { id: 'D', text: "Evidenzio ciò che non funziona" }] },
+  { id: 9, text: "Il tuo stile di comunicazione è:", options: [{ id: 'A', text: "Ordinato, preciso, strutturato" }, { id: 'B', text: "Informale, caldo, vicino" }, { id: 'C', text: "Empatico, accogliente, disponibile" }, { id: 'D', text: "Diretto, chiaro, a volte incisivo" }] },
+  { id: 10, text: "I genitori si rivolgono a te perché:", options: [{ id: 'A', text: "Sanno che trovano informazioni chiare" }, { id: 'B', text: "Si sentono a proprio agio con te" }, { id: 'C', text: "Si sentono ascoltati nelle difficoltà" }, { id: 'D', text: "Sanno che dici le cose come stanno" }] },
+  { id: 11, text: "In caso di incomprensioni:", options: [{ id: 'A', text: "Richiamo a ciò che era stato comunicato" }, { id: 'B', text: "Cerco un confronto sereno" }, { id: 'C', text: "Ascolto a fondo le ragioni dell’altro" }, { id: 'D', text: "Metto in evidenza ciò che non è andato" }] },
+  { id: 12, text: "Il tuo obiettivo principale con i genitori è:", options: [{ id: 'A', text: "Garantire chiarezza e organizzazione" }, { id: 'B', text: "Costruire un rapporto positivo e vicino" }, { id: 'C', text: "Offrire ascolto e supporto" }, { id: 'D', text: "Mantenere coerenza educativa" }] }
+];
+
+// --- COMPONENTE RADAR CHART (Custom SVG) ---
+
+const RadarChart = ({ scores }) => {
+  const size = 300;
+  const center = size / 2;
+  const radius = size * 0.35;
+  const maxVal = 12; // Massimo punteggio possibile
+
+  // Coordinate per i 4 assi (90 gradi ciascuno)
+  const angles = [270, 0, 90, 180]; // Top, Right, Bottom, Left
+  const labels = ["Burocrate", "Amico", "Confessore", "Critico"];
+  const keys = ['A', 'B', 'C', 'D'];
+
+  const getPoint = (val, angle, rOffset = radius) => {
+    const r = (val / maxVal) * rOffset;
+    const rad = (angle * Math.PI) / 180;
+    return {
+      x: center + r * Math.cos(rad),
+      y: center + r * Math.sin(rad)
+    };
+  };
+
+  const points = keys.map((key, i) => getPoint(scores[key], angles[i]));
+  const polygonPath = points.map(p => `${p.x},${p.y}`).join(' ');
+
+  return (
+    <div className="flex justify-center items-center w-full overflow-visible">
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
+        {/* Griglia concentrica */}
+        {[0.25, 0.5, 0.75, 1].map((tick, i) => (
+          <path
+            key={i}
+            d={angles.map((a, j) => {
+              const p = getPoint(maxVal * tick, a);
+              return `${j === 0 ? 'M' : 'L'} ${p.x} ${p.y}`;
+            }).join(' ') + ' Z'}
+            fill="none"
+            stroke="#e2e8f0"
+            strokeWidth="1"
+          />
+        ))}
+
+        {/* Assi */}
+        {angles.map((a, i) => {
+          const p = getPoint(maxVal, a);
+          return (
+            <line
+              key={i}
+              x1={center} y1={center}
+              x2={p.x} y2={p.y}
+              stroke="#e2e8f0"
+              strokeWidth="1"
+            />
+          );
+        })}
+
+        {/* Poligono Dati */}
+        <polygon
+          points={polygonPath}
+          fill="rgba(16, 185, 129, 0.2)"
+          stroke="#10b981"
+          strokeWidth="3"
+          strokeLinejoin="round"
+          className="animate-in fade-in zoom-in duration-1000"
+        />
+
+        {/* Etichette */}
+        {labels.map((label, i) => {
+          const p = getPoint(maxVal, angles[i], radius + 25);
+          return (
+            <text
+              key={i}
+              x={p.x}
+              y={p.y}
+              textAnchor="middle"
+              className="text-[10px] font-bold fill-slate-500 uppercase tracking-tighter"
+            >
+              {label}
+            </text>
+          );
+        })}
+      </svg>
+    </div>
+  );
+};
+
+// --- COMPONENTI UI ---
+
+const Button = ({ children, onClick, variant = 'primary', className = '', disabled = false }) => {
+  const variants = {
+    primary: "bg-emerald-600 text-white hover:bg-emerald-700 shadow-lg shadow-emerald-200",
+    secondary: "bg-white text-emerald-700 border-2 border-emerald-100 hover:bg-emerald-50",
+    outline: "bg-transparent text-slate-500 hover:bg-slate-50 border border-slate-200"
+  };
+  return (
+    <button 
+      onClick={onClick} 
+      disabled={disabled}
+      className={`px-6 py-3 rounded-xl font-semibold transition-all duration-200 flex items-center justify-center gap-2 active:scale-95 disabled:opacity-50 ${variants[variant]} ${className}`}
+    >
+      {children}
+    </button>
+  );
+};
+
+const Card = ({ children, className = "" }) => (
+  <div className={`bg-white rounded-3xl shadow-xl shadow-slate-200/40 p-6 md:p-8 border border-slate-100 ${className}`}>
+    {children}
+  </div>
+);
+
+// --- APP PRINCIPALE ---
+
+export default function App() {
+  const [step, setStep] = useState('home'); 
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [error, setError] = useState(null);
+
+  const handleStart = () => {
+    setAnswers({});
+    setCurrentIdx(0);
+    setStep('quiz');
+  };
+
+  const handleAnswer = (optionId) => {
+    setAnswers(prev => ({ ...prev, [currentIdx]: optionId }));
+    setError(null);
+    if (currentIdx < QUESTIONS.length - 1) {
+      setTimeout(() => setCurrentIdx(prev => prev + 1), 250);
+    }
+  };
+
+  const results = useMemo(() => {
+    if (step !== 'results') return null;
+    const counts = { A: 0, B: 0, C: 0, D: 0 };
+    Object.values(answers).forEach(ans => counts[ans]++);
+    const maxScore = Math.max(...Object.values(counts));
+    const topProfiles = Object.keys(counts).filter(k => counts[k] === maxScore);
+    return { counts, topProfiles };
+  }, [answers, step]);
+
+  return (
+    <div className="min-h-screen bg-[#fcfdfd] text-slate-900 font-sans selection:bg-emerald-100 pb-12">
+      <div className="max-w-xl mx-auto px-5 pt-8 md:pt-16">
+        
+        {/* HEADER */}
+        <header className="mb-10 text-center">
+          <div className="inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest mb-5 border border-emerald-100">
+            ⚜️ Scout Leadership
+          </div>
+          <h1 className="text-3xl font-black text-slate-800 leading-tight">
+            Relazione con i Genitori
+          </h1>
+        </header>
+
+        {/* LOGICA SCHERMATE */}
+        <main>
+          {step === 'home' && (
+            <Card className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+              <div className="text-6xl text-center mb-6">🏕️</div>
+              <h2 className="text-xl font-bold text-center mb-4">Profilazione Riflessiva</h2>
+              <p className="text-slate-500 text-center leading-relaxed mb-8 text-sm md:text-base">
+                Questo questionario offre uno spunto di riflessione sul proprio stile di relazione con i genitori nel contesto scout. Non ha valore scientifico, ma aiuta a riconoscere le proprie tendenze comunicative.
+              </p>
+              <Button onClick={handleStart} className="w-full py-4 text-lg">
+                Inizia il questionario
+                <ChevronRight size={22} />
+              </Button>
+            </Card>
+          )}
+
+          {step === 'quiz' && (
+            <div className="animate-in fade-in duration-500">
+              <div className="mb-8">
+                <div className="flex justify-between items-center mb-3">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Progresso {currentIdx + 1}/{QUESTIONS.length}</span>
+                  <span className="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-lg">{Math.round(((currentIdx + 1) / QUESTIONS.length) * 100)}%</span>
+                </div>
+                <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-emerald-500 transition-all duration-500" style={{ width: `${((currentIdx+1)/QUESTIONS.length)*100}%` }} />
+                </div>
+              </div>
+
+              <Card>
+                <h3 className="text-lg md:text-xl font-bold text-slate-800 mb-8 leading-snug">
+                  {QUESTIONS[currentIdx].text}
+                </h3>
+                <div className="space-y-3">
+                  {QUESTIONS[currentIdx].options.map((opt) => (
+                    <button
+                      key={opt.id}
+                      onClick={() => handleAnswer(opt.id)}
+                      className={`w-full text-left p-4 rounded-2xl border-2 transition-all duration-200 flex items-start gap-4 group
+                        ${answers[currentIdx] === opt.id 
+                          ? 'border-emerald-500 bg-emerald-50/50 ring-1 ring-emerald-500' 
+                          : 'border-slate-50 bg-slate-50/30 hover:border-emerald-200 hover:bg-white'}`}
+                    >
+                      <div className={`mt-0.5 w-6 h-6 rounded-lg flex items-center justify-center font-bold text-xs
+                        ${answers[currentIdx] === opt.id ? 'bg-emerald-500 text-white' : 'bg-white text-slate-400 border border-slate-200 group-hover:border-emerald-300'}`}>
+                        {opt.id}
+                      </div>
+                      <span className={`text-sm md:text-base font-medium leading-tight ${answers[currentIdx] === opt.id ? 'text-emerald-900' : 'text-slate-600'}`}>
+                        {opt.text}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                
+                <div className="flex gap-3 mt-10 pt-6 border-t border-slate-50">
+                  <Button variant="secondary" onClick={() => setCurrentIdx(prev => prev - 1)} disabled={currentIdx === 0} className="flex-1">
+                    <ChevronLeft size={20} /> Indietro
+                  </Button>
+                  {currentIdx === QUESTIONS.length - 1 ? (
+                    <Button onClick={() => setStep('results')} className="flex-[1.5]" disabled={!answers[currentIdx]}>Scopri Profilo</Button>
+                  ) : (
+                    <Button variant="outline" onClick={() => setCurrentIdx(prev => prev + 1)} disabled={!answers[currentIdx]} className="flex-1">
+                      Avanti <ChevronRight size={20} />
+                    </Button>
+                  )}
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {step === 'results' && results && (
+            <div className="animate-in fade-in zoom-in-95 duration-700 space-y-6">
+              <Card className="text-center overflow-hidden relative">
+                <div className="absolute top-0 left-0 w-full h-2 bg-emerald-500" />
+                
+                <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest mb-6 pt-2">Il tuo profilo prevalente</h2>
+                
+                {results.topProfiles.length > 2 ? (
+                  <div className="py-4">
+                    <div className="text-6xl mb-4">🎭</div>
+                    <h3 className="text-2xl font-black text-indigo-800 mb-2">Profilo Multiforme</h3>
+                    <p className="text-slate-500 text-sm px-4 leading-relaxed">
+                      Il tuo stile è estremamente equilibrato. Adatti la tua comunicazione in base alla situazione, attingendo da diverse modalità relazionali senza una tendenza fissa.
+                    </p>
+                  </div>
+                ) : results.topProfiles.length === 2 ? (
+                  <div className="py-4">
+                    <div className="text-6xl mb-4">⚖️</div>
+                    <h3 className="text-2xl font-black text-emerald-800 mb-4">Stile Ibrido</h3>
+                    <div className="grid grid-cols-2 gap-3 mb-6">
+                      {results.topProfiles.map(p => (
+                        <div key={p} className={`p-4 rounded-2xl border ${PROFILES[p].color}`}>
+                          <div className="text-3xl mb-1">{PROFILES[p].emoji}</div>
+                          <div className="font-bold text-xs uppercase">{PROFILES[p].title}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-slate-500 text-sm px-4 italic">
+                      Mostri una forte compresenza di due approcci distinti. Leggi le descrizioni per capire come si integrano nella tua quotidianità.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="py-4">
+                    <div className="text-7xl mb-4 animate-bounce duration-1000">
+                      {PROFILES[results.topProfiles[0]].emoji}
+                    </div>
+                    <h3 className="text-3xl font-black text-slate-800 mb-6">
+                      {PROFILES[results.topProfiles[0]].title}
+                    </h3>
+                    <p className="text-slate-600 text-sm md:text-base leading-relaxed mb-8 text-left">
+                      {PROFILES[results.topProfiles[0]].description}
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                      <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                        <span className="text-[10px] font-black text-emerald-700 uppercase tracking-wider block mb-1">Punto di forza</span>
+                        <p className="text-emerald-900 text-xs font-semibold">{PROFILES[results.topProfiles[0]].strength}</p>
+                      </div>
+                      <div className="bg-rose-50 p-4 rounded-2xl border border-rose-100">
+                        <span className="text-[10px] font-black text-rose-700 uppercase tracking-wider block mb-1">Possibile rischio</span>
+                        <p className="text-rose-900 text-xs font-semibold">{PROFILES[results.topProfiles[0]].risk}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </Card>
+
+              {/* RADAR CHART */}
+              <Card>
+                <h4 className="font-black text-slate-800 text-sm uppercase tracking-widest mb-2 text-center">Analisi delle Tendenze</h4>
+                <div className="py-4">
+                  <RadarChart scores={results.counts} />
+                </div>
+                <div className="grid grid-cols-2 gap-2 mt-4">
+                  {Object.entries(PROFILES).map(([key, p]) => (
+                    <div key={key} className="flex items-center gap-2 p-2 bg-slate-50 rounded-xl">
+                      <span className="text-lg">{p.emoji}</span>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] font-black text-slate-400 uppercase leading-none">{p.title}</span>
+                        <span className="text-xs font-bold text-slate-700 leading-none mt-1">{results.counts[key]} pt</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </Card>
+
+              {/* DESCRIZIONI SECONDARIE SE PARITÀ */}
+              {results.topProfiles.length > 1 && (
+                <div className="space-y-4">
+                  {results.topProfiles.map(pId => (
+                    <Card key={pId} className="border-l-4 border-l-emerald-500">
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className="text-2xl">{PROFILES[pId].emoji}</span>
+                        <h4 className="font-bold text-slate-800">{PROFILES[pId].title}</h4>
+                      </div>
+                      <p className="text-slate-500 text-xs leading-relaxed">{PROFILES[pId].description}</p>
+                    </Card>
+                  ))}
+                </div>
+              )}
+
+              <div className="pt-6 space-y-6">
+                <Button onClick={handleStart} variant="secondary" className="w-full py-4">
+                  <RotateCcw size={20} /> Rifai il test
+                </Button>
+                <p className="text-[10px] text-slate-400 text-center leading-relaxed italic px-8">
+                  Questo test è uno strumento di auto-riflessione. Ogni stile ha valore e l'equilibrio tra essi è spesso la chiave per una buona alleanza educativa.
+                </p>
+              </div>
+            </div>
+          )}
+        </main>
+
+        <footer className="mt-12 text-center text-slate-300 text-[10px] uppercase tracking-widest font-bold">
+          © {new Date().getFullYear()} – Scout Reflection Tool
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+```
