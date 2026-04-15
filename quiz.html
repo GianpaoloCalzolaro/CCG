@@ -206,7 +206,7 @@
                                     <i data-lucide="chevron-left" class="w-4 h-4"></i> Indietro
                                 </button>
                                 ${state.currentIdx === QUESTIONS.length - 1 ? 
-                                    `<button onclick="if(${isComplete})setState({step:'results'})" class="flex-[1.5] py-3 px-4 rounded-xl font-bold text-sm shadow-lg ${isComplete ? 'bg-emerald-600 text-white shadow-emerald-200 cursor-pointer' : 'bg-slate-200 text-slate-400 shadow-none cursor-not-allowed'}" ${isComplete ? '' : 'disabled'}>Vedi Risultati</button>` :
+                                    `<button onclick="setState({step:'results'})" class="flex-[1.5] py-3 px-4 rounded-xl font-bold text-sm shadow-lg ${isComplete ? 'bg-emerald-600 text-white shadow-emerald-200 cursor-pointer' : 'bg-slate-200 text-slate-400 shadow-none cursor-not-allowed'}" ${isComplete ? '' : 'disabled'}>Vedi Risultati</button>` :
                                     `<button onclick="setState({currentIdx: Math.min(QUESTIONS.length-1, state.currentIdx+1)})" class="flex-1 py-3 px-4 rounded-xl border-2 border-emerald-100 text-emerald-600 font-bold text-sm flex items-center justify-center gap-2" ${!state.answers[state.currentIdx] ? 'disabled' : ''}>Avanti <i data-lucide="chevron-right" class="w-4 h-4"></i></button>`
                                 }
                             </div>
