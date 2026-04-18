@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loki Log Uploader</title>
+    <style>
+        :root {
+            --bg-color: #f4f4f9;
+            --text-color: #333;
+            --border-color: #ccc;
+            --primary: #2b6cb0;
+            --primary-hover: #2c5282;
+            --error: #c53030;
+            --success: #2f855a;
+            --font-family: system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        h1, h2, h3 { margin-top: 0; }
+        
+        .info-box {
+            background-color: #e2e8f0;
+            border-left: 4px solid var(--primary);
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group label {
+            margin-bottom: 0;
+            font-weight: normal;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+        }
+
+        button:hover { background-color: var(--primary-hover); }
+        button:disabled { background-color: #a0aec0; cursor: not-allowed; }
+
+        .output-area {
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+            background: #fff;
+            border-radius: 4px;
+        }
+
+        .output-header {
+            background: #edf2f7;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+
+        .output-content {
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.85em;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .log-entry { margin-bottom: 5px; }
+        .log-info { color: var(--text-color); }
+        .log-success { color: var(--success); }
+        .log-error { color: var(--error); font-weight: bold; }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <h1>Loki Log Uploader</h1>
+    
+    <div class="info-box">
+        <strong>Endpoint:</strong> https://logs-prod-039.grafana.net/loki/api/v1/push<br>
+        <strong>Datasource:</strong> grafanacloud-andreamarcioni-logs<br>
+        <strong>Nota sicurezza:</strong> Il token Grafana Cloud non viene salvato in locale e va incollato manualmente ad ogni sessione.
+    </div>
+
+    <div>
+        <h3>1. Configurazione Autenticazione & File</h3>
+        <div class="form-group">
+            <label for="grafanaToken">Grafana Cloud API Token *</label>
+            <input type="password" id="grafanaToken" placeholder="Inserisci il token di accesso..." required>
+        </div>
+        
+        <div class="form-group">
+            <label for="logFile">Seleziona File di Log (Max 20MB) *</label>
+            <input type="file" id="logFile" accept=".txt,.log,text/plain" required>
+        </div>
+    </div>
+
+    <div>
+        <h3>2. Configurazione Labels Loki</h3>
+        <div class="grid-2">
+            <div class="form-group">
+                <label for="labelJob">Job * (Obbligatorio)</label>
+                <input type="text" id="labelJob" placeholder="es. my_app_backend" required>
+            </div>
+            <div class="form-group">
+                <label for="labelFilename">Filename Override (Opzionale)</label>
+                <input type="text" id="labelFilename" placeholder="Lascia vuoto per usare il nome del file">
+            </div>
+            <div class="form-group">
+                <label for="labelHost">Host (Opzionale)</label>
+                <input type="text" id="labelHost" placeholder="es. server-01">
+            </div>
+            <div class="form-group">
+                <label for="labelEnv">Environment (Opzionale)</label>
+                <input type="text" id="labelEnv" placeholder="es. production">
+            </div>
+            <div class="form-group">
+                <label for="labelSource">Source (Opzionale)</label>
+                <input type="text" id="labelSource" placeholder="es. nginx">
+            </div>
+        </div>
+        <div class="form-group checkbox-group">
+            <input type="checkbox" id="ignoreEmptyLines" checked>
+            <label for="ignoreEmptyLines">Ignora righe vuote</label>
+        </div>
+    </div>
+
+    <div class="actions">
+        <button id="btnPreview">Anteprima File</button>
+        <button id="btnSend">Invia a Grafana Loki</button>
+    </div>
+
+    <div class="output-area">
+        <div class="output-header">Console & Risultati</div>
+        <div class="output-content" id="consoleOutput">In attesa di azioni...</div>
+    </div>
+
+    <div class="output-area hidden" id="previewContainer">
+        <div class="output-header">Anteprima File (Prime 20 righe)</div>
+        <div class="output-content" id="previewContent"></div>
+    </div>
+
+    <div class="output-area hidden" id="payloadContainer">
+        <div class="output-header">Anteprima Payload JSON (Parziale per debug)</div>
+        <div class="output-content" id="payloadContent"></div>
+    </div>
+
+    <script>
+        // Costanti di configurazione fisse
+        const LOKI_ENDPOINT = "https://logs-prod-039.grafana.net/loki/api/v1/push";
+        const LOKI_USER = "1558941";
+        const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20 MB
+
+        // Elementi DOM
+        const logFile = document.getElementById('logFile');
+        const grafanaToken = document.getElementById('grafanaToken');
+        const labelJob = document.getElementById('labelJob');
+        const btnPreview = document.getElementById('btnPreview');
+        const btnSend = document.getElementById('btnSend');
+        const consoleOutput = document.getElementById('consoleOutput');
+        
+        let currentFileContent = [];
+        let parsedFileName = "";
+
+        // Utility: Scrive log nella console UI
+        function logMsg(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            const time = new Date().toLocaleTimeString();
+            entry.textContent = `[${time}] ${message}`;
+            consoleOutput.appendChild(entry);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        // Utility: Svuota la console
+        function clearConsole() {
+            consoleOutput.innerHTML = '';
+        }
+
+        // Utility: Normalizza il nome della label per Loki ([a-zA-Z_][a-zA-Z0-9_]*)
+        function normalizeLabelName(name) {
+            let normalized = name.replace(/[^a-zA-Z0-9_]/g, '_');
+            if (/^[0-9]/.test(normalized)) {
+                normalized = '_' + normalized;
+            }
+            return normalized;
+        }
+
+        // Lettura file
+        function readFile(file) {
+            return new Promise((resolve, reject) => {
+                if (!file) return reject("Nessun file selezionato.");
+                if (file.size > MAX_FILE_SIZE) return reject(`File troppo grande. Il limite è ${MAX_FILE_SIZE / 1024 / 1024}MB.`);
+                
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = () => reject("Errore durante la lettura del file.");
+                reader.readAsText(file);
+            });
+        }
+
+        // Prepara ed elabora il file
+        async function prepareLogLines() {
+            const file = logFile.files[0];
+            if (!file) {
+                logMsg("Errore: Seleziona un file prima di procedere.", "error");
+                return null;
+            }
+            
+            logMsg(`Lettura del file '${file.name}' in corso...`);
+            parsedFileName = file.name;
+
+            try {
+                const text = await readFile(file);
+                let lines = text.split(/\r?\n/);
+                
+                const ignoreEmpty = document.getElementById('ignoreEmptyLines').checked;
+                if (ignoreEmpty) {
+                    lines = lines.filter(line => line.trim().length > 0);
+                }
+
+                if (lines.length === 0) {
+                    logMsg("Errore: Il file è vuoto o contiene solo righe vuote.", "error");
+                    return null;
+                }
+
+                currentFileContent = lines;
+                logMsg(`File letto con successo. Trovate ${lines.length} righe valide.`, "success");
+                return lines;
+            } catch (err) {
+                logMsg(err, "error");
+                return null;
+            }
+        }
+
+        // Evento Anteprima
+        btnPreview.addEventListener('click', async () => {
+            clearConsole();
+            const lines = await prepareLogLines();
+            if (!lines) return;
+
+            const previewContainer = document.getElementById('previewContainer');
+            const previewContent = document.getElementById('previewContent');
+            
+            previewContent.textContent = lines.slice(0, 20).join('\n');
+            if (lines.length > 20) {
+                previewContent.textContent += `\n\n... [altre ${lines.length - 20} righe omesse] ...`;
+            }
+            previewContainer.classList.remove('hidden');
+        });
+
+        // Creazione payload JSON
+        function buildLokiPayload(lines) {
+            const labels = {};
+            
+            // Estrazione labels
+            const jobVal = labelJob.value.trim();
+            if (!jobVal) throw new Error("La label 'Job' è obbligatoria.");
+            labels[normalizeLabelName('job')] = jobVal;
+
+            const filenameVal = document.getElementById('labelFilename').value.trim() || parsedFileName;
+            labels[normalizeLabelName('filename')] = filenameVal;
+
+            const hostVal = document.getElementById('labelHost').value.trim();
+            if (hostVal) labels[normalizeLabelName('host')] = hostVal;
+
+            const envVal = document.getElementById('labelEnv').value.trim();
+            if (envVal) labels[normalizeLabelName('environment')] = envVal;
+
+            const sourceVal = document.getElementById('labelSource').value.trim();
+            if (sourceVal) labels[normalizeLabelName('source')] = sourceVal;
+
+            // Timestamp handling (Loki richiede nanosecondi come stringhe)
+            // Date.now() restituisce millisecondi. Usiamo BigInt per gestire il moltiplicatore senza perdere precisione
+            let currentNs = BigInt(Date.now()) * 1000000n;
+            
+            const values = [];
+            for (const line of lines) {
+                values.push([currentNs.toString(), line]);
+                // Incrementiamo di 1 microsecondo (1000 ns) per riga per mantenere l'ordine temporale senza collisioni
+                currentNs += 1000n; 
+            }
+
+            return {
+                streams: [
+                    {
+                        stream: labels,
+                        values: values
+                    }
+                ]
+            };
+        }
+
+        // Pulsante Invio
+        btnSend.addEventListener('click', async () => {
+            clearConsole();
+            const token = grafanaToken.value.trim();
+            
+            if (!token) {
+                logMsg("Errore: Inserisci il token API di Grafana Cloud.", "error");
+                return;
+            }
+
+            const lines = await prepareLogLines();
+            if (!lines) return;
+
+            let payload;
+            try {
+                payload = buildLokiPayload(lines);
+            } catch (err) {
+                logMsg(`Errore Payload: ${err.message}`, "error");
+                return;
+            }
+
+            // Mostra un'anteprima sicura del payload (troncata, no token)
+            const payloadContainer = document.getElementById('payloadContainer');
+            const payloadContent = document.getElementById('payloadContent');
+            
+            const safePayloadClone = JSON.parse(JSON.stringify(payload));
+            if (safePayloadClone.streams[0].values.length > 5) {
+                safePayloadClone.streams[0].values = safePayloadClone.streams[0].values.slice(0, 5);
+                safePayloadClone.streams[0].values.push(["...", "... Omissis - visualizzazione troncata ..."]);
+            }
+            payloadContent.textContent = JSON.stringify(safePayloadClone, null, 2);
+            payloadContainer.classList.remove('hidden');
+
+            logMsg(`Avvio invio di ${lines.length} righe a Loki...`);
+            
+            // Disabilita UI
+            btnSend.disabled = true;
+            btnPreview.disabled = true;
+
+            const abortController = new AbortController();
+            const timeoutId = setTimeout(() => abortController.abort(), 60000); // 60s timeout
+
+            try {
+                // Costruzione Basic Auth: btoa(username:password)
+                const authHeader = 'Basic ' + btoa(`${LOKI_USER}:${token}`);
+
+                // Fetch a Loki
+                // NOTA SUL CORS: 
+                // Se questa pagina HTML viene aperta direttamente dal file system (file://) o da un localhost generico,
+                // le policy CORS del browser potrebbero bloccare la richiesta POST verso il dominio Grafana Cloud.
+                // Questa è una restrizione di sicurezza standard dei browser, non risolvibile via JS lato client 
+                // senza configurazioni specifiche del backend remoto o l'uso di un proxy locale.
+                const response = await fetch(LOKI_ENDPOINT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': authHeader
+                    },
+                    body: JSON.stringify(payload),
+                    signal: abortController.signal
+                });
+
+                clearTimeout(timeoutId);
+
+                if (response.ok) {
+                    logMsg(`Successo! HTTP Status ${response.status}. Log inviati correttamente.`, "success");
+                } else {
+                    const errorText = await response.text();
+                    logMsg(`Errore Server Loki. HTTP Status ${response.status}: ${errorText}`, "error");
+                }
+
+            } catch (err) {
+                clearTimeout(timeoutId);
+                if (err.name === 'AbortError') {
+                    logMsg("Errore: Timeout della richiesta dopo 60 secondi.", "error");
+                } else {
+                    logMsg(`Errore di rete durante la fetch: ${err.message}`, "error");
+                    logMsg("Se visualizzi un errore di rete (es. TypeError: Failed to fetch), è altamente probabile che sia dovuto al blocco CORS del browser. L'endpoint di Grafana potrebbe non accettare POST da questo origin. Controlla la console del browser (F12) per i dettagli esatti.", "error");
+                }
+            } finally {
+                // Riabilita UI
+                btnSend.disabled = false;
+                btnPreview.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
