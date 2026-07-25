@@ -1,0 +1,424 @@
+
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AGESCI Branco Roma 104 - Menù</title>
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons (CDN) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            background-color: #f3f4f6;
+        }
+        .font-slab {
+            font-family: 'Roboto Slab', serif;
+        }
+        /* Classi di utilità usate dal JS per le transizioni */
+        .hidden { display: none !important; }
+        .rotate-180 { transform: rotate(180deg); }
+    </style>
+</head>
+<body class="text-gray-800 pb-10">
+
+    <!-- Header Fissato in alto -->
+    <header class="bg-[#6c4796] text-white p-5 shadow-lg sticky top-0 z-10 rounded-b-3xl">
+        <div class="flex items-center justify-center gap-3">
+            <i data-lucide="tent" class="w-8 h-8 text-[#f8ac00]"></i>
+            <h1 class="text-xl md:text-2xl font-bold font-slab tracking-wide">AGESCI Branco Roma 104</h1>
+        </div>
+    </header>
+
+    <!-- Contenitore Principale del Menù -->
+    <main id="menu-container" class="max-w-md mx-auto p-4 pt-6 space-y-4">
+        <!-- Generato dinamicamente da JavaScript -->
+    </main>
+
+    <!-- Script Logica Applicazione -->
+    <script>
+        // --- DATI DEL MENU ---
+        const menuData = [
+            {
+                id: "sab-25", dayName: "Sabato", date: "25 Luglio", subtitle: "Arrivo",
+                meals: [
+                    {
+                        type: "Cena", timeIcon: "moon",
+                        dishes: [
+                            { name: "Pollo arrosto", category: "Secondo (Carne)", icon: "drumstick" },
+                            { name: "Patate al forno", category: "Contorno", icon: "carrot" },
+                            { name: "Insalata", category: "Contorno", icon: "salad" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "dom-26", dayName: "Domenica", date: "26 Luglio",
+                meals: [
+                    {
+                        type: "Colazione", timeIcon: "coffee",
+                        dishes: [
+                            { name: "Pane e marmellata", category: "Cibo", icon: "wheat" },
+                            { name: "Latte, latte al cacao, tè", category: "Bevande", icon: "milk" }
+                        ]
+                    },
+                    {
+                        type: "Pranzo", timeIcon: "sun",
+                        dishes: [
+                            { name: "Spaghetti con zucchine", category: "Primo", icon: "utensils" },
+                            { name: "Frittata di cipolle", category: "Secondo (Uova)", icon: "egg" },
+                            { name: "Insalata mista", category: "Contorno", icon: "salad" }
+                        ]
+                    },
+                    {
+                        type: "Cena", timeIcon: "moon",
+                        dishes: [
+                            { name: "Polpettine di fagioli e patate", category: "Secondo (Legumi)", icon: "leaf" },
+                            { name: "Insalata", category: "Contorno", icon: "salad" },
+                            { name: "Pane", category: "Accompagnamento", icon: "wheat" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "lun-27", dayName: "Lunedì", date: "27 Luglio",
+                meals: [
+                    {
+                        type: "Colazione", timeIcon: "coffee",
+                        dishes: [
+                            { name: "Pane e crema spalmabile", category: "Cibo", icon: "wheat", containsLactose: true },
+                            { name: "Latte, latte al cacao, tè", category: "Bevande", icon: "milk" }
+                        ]
+                    },
+                    {
+                        type: "Pranzo", timeIcon: "sun",
+                        dishes: [
+                            { name: "Penne al pomodoro", category: "Primo", icon: "utensils" },
+                            { name: "Uova affogate al pomodoro", category: "Secondo (Uova)", icon: "egg" },
+                            { name: "Insalata di carote julienne", category: "Contorno", icon: "carrot" }
+                        ]
+                    },
+                    {
+                        type: "Cena", timeIcon: "moon",
+                        dishes: [
+                            { name: "Pollo al limone", category: "Secondo (Carne)", icon: "drumstick" },
+                            { name: "Patate al forno", category: "Contorno", icon: "carrot" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "mar-28", dayName: "Martedì", date: "28 Luglio",
+                meals: [
+                    {
+                        type: "Colazione", timeIcon: "coffee",
+                        dishes: [
+                            { name: "Pane e marmellata", category: "Cibo", icon: "wheat" },
+                            { name: "Latte, latte al cacao, tè", category: "Bevande", icon: "milk" }
+                        ]
+                    },
+                    {
+                        type: "Pranzo", timeIcon: "sun",
+                        dishes: [
+                            { name: "Pasta e lenticchie", category: "Primo (Legumi)", icon: "utensils" },
+                            { name: "Mozzarella e pomodoro", category: "Secondo (Latticini)", icon: "leaf", containsLactose: true },
+                            { name: "Insalata", category: "Contorno", icon: "salad" }
+                        ]
+                    },
+                    {
+                        type: "Cena", timeIcon: "moon",
+                        dishes: [
+                            { name: "Uova strapazzate", category: "Secondo (Uova)", icon: "egg" },
+                            { name: "Finocchi in insalata", category: "Contorno", icon: "carrot" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "mer-29", dayName: "Mercoledì", date: "29 Luglio", subtitle: "Uscita",
+                meals: [
+                    {
+                        type: "Colazione", timeIcon: "coffee",
+                        dishes: [
+                            { name: "Pane e crema spalmabile", category: "Cibo", icon: "wheat", containsLactose: true },
+                            { name: "Latte, latte al cacao, tè", category: "Bevande", icon: "milk" }
+                        ]
+                    },
+                    {
+                        type: "Pranzo al Sacco", timeIcon: "map-pin",
+                        dishes: [
+                            { name: "2 Panini (cotto + salame)", category: "Principale", icon: "sandwich" },
+                            { name: "Formaggio", category: "Extra", icon: "leaf", containsLactose: true },
+                            { name: "Frutta e Biscotti", category: "Snack", icon: "apple" }
+                        ]
+                    },
+                    {
+                        type: "Cena Francescana", timeIcon: "moon",
+                        dishes: [
+                            { name: "Pane e formaggio semplice", category: "Pasto povero", icon: "wheat", containsLactose: true },
+                            { name: "Patate lesse e verdure", category: "Contorno", icon: "leaf" },
+                            { name: "Frutta", category: "Fine pasto", icon: "apple" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "gio-30", dayName: "Giovedì", date: "30 Luglio",
+                meals: [
+                    {
+                        type: "Colazione", timeIcon: "coffee",
+                        dishes: [
+                            { name: "Pane e marmellata", category: "Cibo", icon: "wheat" },
+                            { name: "Latte, latte al cacao, tè", category: "Bevande", icon: "milk" }
+                        ]
+                    },
+                    {
+                        type: "Pranzo", timeIcon: "sun",
+                        dishes: [
+                            { name: "Pasta al pesto", category: "Primo", icon: "utensils" },
+                            { name: "Merluzzo in umido", category: "Secondo (Pesce)", icon: "fish" },
+                            { name: "Pomodori gratinati", category: "Contorno", icon: "carrot" }
+                        ]
+                    },
+                    {
+                        type: "Cena", timeIcon: "moon",
+                        dishes: [
+                            { name: "Salsiccia ai ferri", category: "Secondo (Carne)", icon: "drumstick" },
+                            { name: "Insalata", category: "Contorno", icon: "salad" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "ven-31", dayName: "Venerdì", date: "31 Luglio", subtitle: "Fiesta",
+                meals: [
+                    {
+                        type: "Colazione", timeIcon: "coffee",
+                        dishes: [
+                            { name: "Pane e crema spalmabile", category: "Cibo", icon: "wheat", containsLactose: true },
+                            { name: "Latte, latte al cacao, tè", category: "Bevande", icon: "milk" }
+                        ]
+                    },
+                    {
+                        type: "Pranzo", timeIcon: "sun",
+                        dishes: [
+                            { name: "Pasta all'amatriciana", category: "Primo", icon: "utensils" },
+                            { name: "Formaggio e pomodoro", category: "Secondo (Latticini)", icon: "leaf", containsLactose: true },
+                            { name: "Insalata", category: "Contorno", icon: "salad" }
+                        ]
+                    },
+                    {
+                        type: "Cena Fiesta", timeIcon: "moon",
+                        dishes: [
+                            { name: "Hamburger", category: "Piatto Unico", icon: "sandwich" },
+                            { name: "Patatine fritte", category: "Contorno", icon: "carrot" },
+                            { name: "Pomodori conditi", category: "Contorno", icon: "salad" },
+                            { name: "Dolce", category: "Dessert", icon: "cake-slice" }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "sab-01", dayName: "Sabato", date: "01 Agosto", subtitle: "Partenza",
+                meals: [
+                    {
+                        type: "Colazione", timeIcon: "coffee",
+                        dishes: [
+                            { name: "Pane e marmellata", category: "Cibo", icon: "wheat" },
+                            { name: "Latte, latte al cacao, tè", category: "Bevande", icon: "milk" },
+                            { name: "Frutta", category: "Extra", icon: "apple" }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        let currentOpenDayId = null;
+
+        // --- FUNZIONI DI INTERAZIONE ---
+        function toggleDay(dayId) {
+            // Se c'è un giorno aperto ed è diverso da quello cliccato, chiudilo
+            if (currentOpenDayId && currentOpenDayId !== dayId) {
+                closeDay(currentOpenDayId);
+            }
+
+            const content = document.getElementById(`day-content-${dayId}`);
+            
+            if (content.classList.contains('hidden')) {
+                openDay(dayId);
+                currentOpenDayId = dayId;
+            } else {
+                closeDay(dayId);
+                currentOpenDayId = null;
+            }
+        }
+
+        function openDay(dayId) {
+            document.getElementById(`day-content-${dayId}`).classList.remove('hidden');
+            document.getElementById(`day-chevron-${dayId}`).classList.add('rotate-180', 'text-[#6c4796]');
+            document.getElementById(`day-chevron-${dayId}`).classList.remove('text-gray-400');
+            
+            const container = document.getElementById(`day-container-${dayId}`);
+            container.classList.add('border-[#6c4796]', 'shadow-md');
+            container.classList.remove('border-gray-200');
+            
+            const iconBg = document.getElementById(`day-icon-bg-${dayId}`);
+            iconBg.classList.add('bg-[#6c4796]/10');
+            iconBg.classList.remove('bg-gray-100');
+        }
+
+        function closeDay(dayId) {
+            document.getElementById(`day-content-${dayId}`).classList.add('hidden');
+            document.getElementById(`day-chevron-${dayId}`).classList.remove('rotate-180', 'text-[#6c4796]');
+            document.getElementById(`day-chevron-${dayId}`).classList.add('text-gray-400');
+            
+            const container = document.getElementById(`day-container-${dayId}`);
+            container.classList.remove('border-[#6c4796]', 'shadow-md');
+            container.classList.add('border-gray-200');
+            
+            const iconBg = document.getElementById(`day-icon-bg-${dayId}`);
+            iconBg.classList.remove('bg-[#6c4796]/10');
+            iconBg.classList.add('bg-gray-100');
+        }
+
+        function toggleMeal(mealId) {
+            const content = document.getElementById(`meal-content-${mealId}`);
+            const chevron = document.getElementById(`meal-chevron-${mealId}`);
+            const icon = document.getElementById(`meal-icon-${mealId}`);
+            const iconBg = document.getElementById(`meal-icon-bg-${mealId}`);
+
+            if (content.classList.contains('hidden')) {
+                // Apri Pasto
+                content.classList.remove('hidden');
+                chevron.classList.add('rotate-180', 'text-[#6c4796]');
+                chevron.classList.remove('text-gray-400');
+                
+                icon.classList.remove('text-[#f8ac00]');
+                icon.classList.add('text-[#6c4796]');
+                
+                iconBg.classList.add('bg-[#6c4796]/10');
+                iconBg.classList.remove('bg-gray-100');
+            } else {
+                // Chiudi Pasto
+                content.classList.add('hidden');
+                chevron.classList.remove('rotate-180', 'text-[#6c4796]');
+                chevron.classList.add('text-gray-400');
+                
+                icon.classList.add('text-[#f8ac00]');
+                icon.classList.remove('text-[#6c4796]');
+                
+                iconBg.classList.remove('bg-[#6c4796]/10');
+                iconBg.classList.add('bg-gray-100');
+            }
+        }
+
+        // --- RENDERIZZA HTML ---
+        function renderMenu() {
+            const container = document.getElementById('menu-container');
+            let html = '';
+
+            menuData.forEach((day) => {
+                let mealsHtml = '';
+                
+                day.meals.forEach((meal, mealIdx) => {
+                    const mealId = `${day.id}-meal-${mealIdx}`;
+                    let dishesHtml = '';
+                    
+                    meal.dishes.forEach((dish) => {
+                        const lactoseBadge = dish.containsLactose 
+                            ? `<span class="bg-orange-100 text-orange-700 border border-orange-200 text-[9px] md:text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ml-1">Lattosio</span>` 
+                            : '';
+
+                        dishesHtml += `
+                            <div class="flex items-start gap-3">
+                                <div class="bg-[#f5e7d3]/50 p-2 rounded-lg mt-0.5 shrink-0">
+                                    <i data-lucide="${dish.icon}" class="w-5 h-5 text-[#6c4796]"></i>
+                                </div>
+                                <div class="text-left w-full">
+                                    <div class="flex items-center flex-wrap gap-1.5">
+                                        <p class="font-bold text-gray-800 text-sm md:text-base leading-tight">
+                                            ${dish.name}
+                                        </p>
+                                        ${lactoseBadge}
+                                    </div>
+                                    <p class="text-xs md:text-sm text-gray-500 mt-0.5 font-medium uppercase tracking-wider">
+                                        ${dish.category}
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    mealsHtml += `
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-3 last:mb-0">
+                            <button onclick="toggleMeal('${mealId}')" class="w-full flex items-center justify-between p-4 active:bg-gray-50 transition-colors">
+                                <div class="flex items-center gap-3">
+                                    <span id="meal-icon-${mealId}" class="inline-block text-[#f8ac00] transition-colors">
+                                        <i data-lucide="${meal.timeIcon}" class="w-5 h-5"></i>
+                                    </span>
+                                    <h3 class="font-bold text-gray-800 font-slab text-lg">${meal.type}</h3>
+                                </div>
+                                <div id="meal-icon-bg-${mealId}" class="p-1 rounded-full transition-colors bg-gray-100">
+                                    <span id="meal-chevron-${mealId}" class="inline-block text-gray-400 transition-transform duration-300">
+                                        <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                                    </span>
+                                </div>
+                            </button>
+                            <div id="meal-content-${mealId}" class="hidden p-4 pt-2 border-t border-gray-100 bg-gray-50/30 space-y-4">
+                                ${dishesHtml}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                const subtitleHtml = day.subtitle 
+                    ? `<span class="bg-[#f8ac00] text-[#1d1d1b] text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest shadow-sm">${day.subtitle}</span>`
+                    : '';
+
+                html += `
+                    <div id="day-container-${day.id}" class="bg-white rounded-2xl shadow-sm border border-gray-200 transition-all duration-300 overflow-hidden mb-4">
+                        <button onclick="toggleDay('${day.id}')" class="w-full flex items-center justify-between p-5 bg-white active:bg-gray-50 transition-colors">
+                            <div class="flex flex-col items-start">
+                                <span class="text-[#6c4796] font-bold text-xl font-slab">${day.dayName}</span>
+                                <span class="text-gray-500 font-medium">${day.date}</span>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                ${subtitleHtml}
+                                <div id="day-icon-bg-${day.id}" class="p-1 rounded-full transition-colors bg-gray-100">
+                                    <span id="day-chevron-${day.id}" class="inline-block text-gray-400 transition-transform duration-300">
+                                        <i data-lucide="chevron-down" class="w-6 h-6"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </button>
+                        
+                        <div id="day-content-${day.id}" class="hidden p-4 pt-0 bg-gray-50/50">
+                            <div class="h-px bg-gray-200 w-full mb-3"></div>
+                            ${mealsHtml}
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            
+            // Attiva le icone di Lucide dopo aver manipolato il DOM
+            lucide.createIcons();
+        }
+
+        // --- INIZIALIZZAZIONE ---
+        document.addEventListener("DOMContentLoaded", () => {
+            renderMenu();
+        });
+    </script>
+</body>
+</html>
