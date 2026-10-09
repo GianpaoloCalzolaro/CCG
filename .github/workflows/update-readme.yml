@@ -1,0 +1,39 @@
+name: Aggiorna README
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.html'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rigenera elenco pagine nel README
+        run: |
+          {
+            echo "## Pagine web"
+            echo
+            echo "Le pagine sono disponibili in versione visualizzata tramite GitHub Pages:"
+            echo
+            for f in $(ls *.html | LC_ALL=C sort); do
+              echo "- [$f](https://gianpaolocalzolaro.github.io/CCG/$f)"
+            done
+          } > README.md
+
+      - name: Commit e push se cambiato
+        run: |
+          if [ -n "$(git status --porcelain README.md)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add README.md
+            git commit -m "Aggiorna README con l'elenco delle pagine HTML"
+            git push
+          fi
