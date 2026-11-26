@@ -12,3 +12,4 @@ Le pagine sono disponibili in versione visualizzata tramite GitHub Pages:
 - [quiz.html](https://gianpaolocalzolaro.github.io/CCG/quiz.html)
 - [report_verifica_campo_capi_gruppo_2023_2025.html](https://gianpaolocalzolaro.github.io/CCG/report_verifica_campo_capi_gruppo_2023_2025.html)
 - [riflessioni.html](https://gianpaolocalzolaro.github.io/CCG/riflessioni.html)
+- [zone_dashboard.html](https://gianpaolocalzolaro.github.io/CCG/zone_dashboard.html)
